@@ -1,0 +1,89 @@
+﻿@page 
+@using System.Data;
+@model Sarmad.Pages.HomeModel
+
+
+<!--جستجوی فرم -->
+
+<div class="w-max-500 mx-auto" @ViewData["HiddenSearch"]>
+   
+    <form method="post" data-ajax-method="post" data-ajax="true"
+          data-allow-enter="true" 
+          data-ajax-begin="SpinnerShow('ListForms');"
+          data-ajax-url="?handler=ListForm"
+          data-ajax-update="#ListForms">
+        <h5 class="text-primary">جستجوی فرم</h5>
+        <div class="d-flex flex-wrap justify-content-center filterArea">
+            <div class="w-40 m-1">
+                <span class="control-label">فرم</span>
+                <input type="text" class="control-input text-center" name="FilterForm" value="" />
+            </div>
+            <div class="w-40 m-1">
+                <span class="control-label">صفحه</span>
+                <input type="text" class="control-input text-center" name="FilterPage" value="" />
+            </div>
+            <button type="submit" id="ListFormBtn" class="btn_Icon Icon_Orang icofont-00x icofont-search-1 mt-4" data-bs-toggle="tooltip" data-bs-title="جستجوی فرمها"></button>
+        </div>
+    </form>
+</div>
+
+<!--لیست ده فرم آخر -->
+<button class="btn btn-outline-primary" hidden id="download">Download PDF</button>
+
+<div id="ListForms">
+
+    <h4 class="text-primary">آخرین صفحات بازدید شده</h4>
+    <hr />
+
+    <div class="w-max-1200 mx-auto">
+        <div class="row">
+            @foreach (DataRow item in Model.formData.lastForms.Rows)
+            {   if (@item["Daste"].ToString() != "G")
+                {
+                    <div class="col-6 col-sm-3 col-lg-2 py-1">
+                        <a href='/@item["NameForm"]' class="BTN btn_Normal btn_Firuze w-100" onclick="$('#waitbody').css('display', 'flex');">
+                            @item["Onvan"]
+                            <h6 class="text_line21 text-white-50 font-12 ltr">@item["TTime"]</h6>
+                        </a>
+                    </div>
+
+                }
+            }
+        </div>
+    </div>
+</div>
+
+<script>
+    /*   var timeleft = 300;
+       var downloadTimer = setInterval(function () {
+           if (timeleft <= 0) {
+               location.reload();
+           }
+           document.getElementById("progressBar").value = 300 - timeleft;
+           timeleft -= 1;
+       }, 1000);
+   */
+</script>
+
+
+
+@* 
+<div hidden>
+
+    @if (@ViewData["UpdateSatrap"].ToString() != "OK")
+    {
+        <!--  بررسی دیتای ساتراپ که توسط پرسنل مدیریت انجا میشود-->
+        <form hidden asp-antiforgery="true" method="post" data-ajax-method="post" data-ajax="true"
+              data-ajax-url="/ApiCenter?handler=UpdateSatrap">
+            <input type="hidden" name="ID" value="@ViewData["SatrapId"]" />
+            <input type="submit" id="UpdateSatrapBtn" hidden name="Table" value="@ViewData["UpdateSatrap"]" />
+        </form>
+
+        <script>
+            window.onload = function () {
+                ClickBtn('UpdateSatrapBtn');
+            }
+        </script>
+    }
+</div>
+ *@

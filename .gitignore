@@ -2,7 +2,21 @@
 # This .gitignore file was automatically created by Microsoft(R) Visual Studio.
 ################################################################################
 
-/.vs/Sarmad
-/bin
-/obj
-*.json
+# Visual Studio
+.vs/
+
+# Build results
+**/bin/
+**/obj/
+
+# User-specific files
+*.user
+*.suo
+
+# Temporary files
+*.tmp
+*.log
+
+**/appsettings.Development.json
+Uploads/
+    .gitkeep

@@ -1,0 +1,208 @@
+﻿@page
+@model Sarmad.Pages.Base.ProductsModel
+@using System.Data;
+@using System.Web
+@{
+    DataRow pagesitem;
+}
+
+<div>
+    <footer-page class="nav nav-tabs border-top border-light">
+        <div class="w-inline">
+            <div id="menu-page-btn">
+                <menu-page id="FastAlarm" class="dis-none" data-bs-toggle="tooltip" data-bs-title="گزارش پیام جدید" onclick="$('#waitbody').css('display', 'flex'); GoToUrl('/Dayli/MsgCenter');">
+                    <span class="text-danger icofont-00x icofont-bell-alt"></span>
+                    <span id="FastAlarmMsg">10 تا پیام جدید داری</span>
+                </menu-page>
+                <menu-page class="w-min-50" data-bs-toggle="tooltip" data-bs-title="منو" onclick="MenuToggel();">
+                    <span class="menu-firuze icofont-00x icofont-listine-dots icofont-rotate-180"></span>
+                </menu-page><point></point>
+                <menu-page data-bs-toggle="tab" data-bs-target="#tab_A" class="active">کالاها</menu-page><point></point>
+                <menu-page data-bs-toggle="tab" data-bs-target="#tab_B">طبقات کالا</menu-page><point></point>
+                <menu-page class="w-min-50" onclick="HelpAjax(@Model.FormId);" data-bs-toggle="tooltip" data-bs-title="راهنما">
+                    <span class="menu-firuze icofont-00x icofont-learn"></span>
+                </menu-page>
+                <menu-page class="w-min-50" onclick="ToggleFullscreen();" data-bs-toggle="tooltip" data-bs-title="تمام صفحه">
+                    <span class="menu-firuze icofont-00x icofont-expand"></span>
+                </menu-page>
+                <menu-page onclick="GoToTop();" class="w-min-50" data-bs-toggle="tooltip" data-bs-title="برگشت به بالا">
+                    <span class="menu-firuze icofont-00x icofont-stylish-up"></span>
+                </menu-page>
+                <menu-page class="bg-secondary" data-bs-toggle="tooltip" data-bs-title="برگشت به صفحه قبل">
+                    <select class="text-start bg-secondary text-light" onchange="GoToUrl(this.value);">
+                        @foreach (DataRow item in Model.formData.lastForms.Rows)
+                        {
+                            <option value="@item["NameForm"]">@item["Onvan"]</option>
+                        }
+                    </select>
+                </menu-page><point></point>
+                <button type="button" class="pos-Right btn_Icon Icon_Red icofont-2x icofont-curved-double-right d-md-none"
+                        data-bs-title="اسکرول به راست" onclick="ScrollRight('menu-page-btn');"></button>
+                <button type="button" class="pos-Left btn_Icon Icon_Red icofont-2x icofont-curved-double-left d-md-none"
+                        data-bs-title="اسکرول به چپ" onclick="ScrollLeft('menu-page-btn');"></button>
+            </div>
+        </div>
+    </footer-page>
+
+    <div class="tab-content">
+
+        <!-- ✅ تب کالاها -->
+        <div class="tab-pane fade active show" id="tab_A">
+            @{
+                pagesitem = Model.formData.Pages.Select("RJ = 1").First();
+            }
+            <div class="OnvanSafhe">
+                <h6 class="shadow">@pagesitem["OnvanPage"]</h6>
+            </div>
+
+            @if (!string.IsNullOrEmpty(pagesitem["HeaderPage"].ToString()))
+            {
+                <div class="alert alert-secondary">
+                    @Html.Raw(HttpUtility.HtmlDecode(pagesitem["HeaderPage"].ToString()))
+                </div>
+            }
+
+            <div class="w-max-1000 mx-auto">
+                <form method="get" data-ajax="true" data-ajax-method="get"
+                      data-ajax-begin="MsgFormSpinner('A','ثبت اطلاعات کالاها', 'چند لحظه صبر کنید');"
+                      data-ajax-url="?handler=FormSabtProduct"
+                      data-ajax-update="#MsgForm_A_MATN">
+                    <input type="submit" hidden id="FormSabtProductBtn" name="ID" />
+                    <div class="px-2 text-end">
+                        <button type="button" class="BTN btn_Pill btn_Blue2 w-min-200" onclick="ClickBtnSimpl('FormSabtProductBtn','0');"><span>افزودن کالای جدید</span><i class="icofont-00x icofont-plus float-end"></i></button>
+                    </div>
+                </form>
+                <form hidden method="get" data-ajax="true" data-ajax-method="get"
+                      data-ajax-begin="MsgFormSpinner('A','ثبت بسته بندی های کالا', 'چند لحظه صبر کنید');"
+                      data-ajax-url="?handler=FormSabtBox"
+                      data-ajax-update="#MsgForm_A_MATN">
+                    <input type="submit" hidden id="FormSabtBoxBtn" name="ID" />
+                </form>
+
+                <div class="filterArea">
+                    <form method="get" data-ajax-method="get" data-ajax="true"
+                              data-ajax-begin="SpinnerShow('ListProducts', 'در حال بارگذاری لیست کالاها');"
+                              data-ajax-url="?handler=ListProducts"
+                              data-ajax-update="#ListProducts">
+                        <div class="row">
+                            <div class="col-6 col-sm-3">
+                                <div class="pb-2">
+                                    <span class="control-label">گد/نام</span>
+                                    <input type="text" class="control-input text-center" name="Filter" value="" />
+                                </div>
+                            </div>
+                            <div class="col-6 col-sm-3">
+                                <div class="pb-2">
+                                    <span class="control-label">گروه کالا</span>
+                                    <select name="Grp" class="control-input">
+                                        <option value="">همه</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-6 col-sm-3">
+                                <div class="pb-2">
+                                    <span class="control-label">واحد سنجش</span>
+                                    <select name="Vahed" class="control-input">
+                                        <option value="">همه</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-6 col-sm-3">
+                                <div class="pb-2">
+                                    <span class="control-label">وضعیت</span>
+                                    <select name="Act" class="control-input">
+                                        <option value="">همه</option>
+                                        <option value="Y">فعال</option>
+                                        <option value="N">غیر فعال</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-6 col-sm-3">
+                                <div class="pb-2">
+                                    <span class="control-label">ترتیب نمایش</span>
+                                    <select name="Sort" class="control-input">
+                                        <option value="A">نام</option>
+                                        <option value="B" selected>کد</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-sm-9 d-flex justify-content-end align-items-end">
+                                <button type="submit" data-bs-toggle="tooltip" data-bs-title="گزارش" class="BTN btn_Pill btn_Blue2 w-min-200"><span>نمایش گزارش </span><i class="icofont-2x icofont-search-2"></i></button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <div class="mt-3" id="ListProducts">
+                <div class="text-center wrapword text-warning">برای تهیه گزارش از فیلتر مناسب استفاده کنید.</div>
+            </div>
+        </div>
+
+        <!-- ✅ طبقات کالا -->
+        <div class="tab-pane fade" id="tab_B">
+            @{
+                pagesitem = Model.formData.Pages.Select("RJ = 2").First();
+            }
+            <div class="OnvanSafhe">
+                <h6 class="shadow">@pagesitem["OnvanPage"]</h6>
+            </div>
+
+            @if (!string.IsNullOrEmpty(pagesitem["HeaderPage"].ToString()))
+            {
+                <div class="alert alert-secondary">
+                    @Html.Raw(HttpUtility.HtmlDecode(pagesitem["HeaderPage"].ToString()))
+                </div>
+            }
+
+            <div class="w-max-1000 mx-auto">
+                <form method="get" data-ajax="true" data-ajax-method="get"
+                      data-ajax-begin="MsgFormSpinner('A','ثبت اطلاعات طبقات کالا', 'چند لحظه صبر کنید');"
+                      data-ajax-url="?handler=FormSabtCategory"
+                      data-ajax-update="#MsgForm_A_MATN">
+                    <input type="submit" hidden id="FormSabtCategoryBtn" name="ID" />
+                    <div class="px-2 text-end">
+                        <button type="button" class="BTN btn_Pill btn_Blue2 w-min-200" onclick="ClickBtnSimpl('FormSabtCategoryBtn','0');"><span>افزودن طبقه کالای جدید</span><span class="icofont-00x icofont-plus float-end"></span></button>
+                    </div>
+                </form>
+
+                <div class="filterArea">
+                    <div class=" w-100 py-2 m-auto ">
+                        <form method="get" data-ajax-method="get" data-ajax="true"
+                              data-ajax-begin="SpinnerShow('ListCategories', 'در حال بارگذاری لیست طبقات کالا');"
+                              data-ajax-url="?handler=ListCategories"
+                              data-ajax-update="#ListCategories">
+                            <div class="row">
+                                <div class="col-6 col-sm-4">
+                                    <div class="pb-2">
+                                        <span class="control-label">محدودیت</span>
+                                        <input type="text" class="control-input text-center" name="Filter" value="" />
+                                    </div>
+                                </div>
+                                <div class="col-6 col-sm-4">
+                                    <div class="pb-2">
+                                        <span class="control-label">ترتیب نمایش</span>
+                                        <div class="d-flex">
+                                            <select name="Sort" class="control-input">
+                                                <option value="A" selected>کد</option>
+                                                <option value="B">نام</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-sm-4 d-flex justify-content-end align-items-end">
+                                    <button type="submit" data-bs-toggle="tooltip" data-bs-title="گزارش" class="BTN btn_Pill btn_Blue2 w-min-200"><span>نمایش گزارش </span><i class="icofont-2x icofont-search-2"></i></button>
+                                </div>
+
+                            </div>
+
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <div class="mt-3" id="ListCategories">
+                <div class="text-center wrapword text-warning">برای تهیه گزارش از فیلتر مناسب استفاده کنید.</div>
+            </div>
+        </div>
+
+    </div>
+</div>

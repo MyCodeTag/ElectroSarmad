@@ -1,0 +1,215 @@
+﻿@page
+@model Sarmad.Pages.ProfileModel
+@using System.Data;
+@using System.Web
+@{
+    DataRow pagesitem;
+    var User = Model.UserData;
+}
+
+<div>
+    <footer-page class="nav nav-tabs border-top border-light">
+        <div class="w-inline">
+            <div id="menu-page-btn">
+                <menu-page data-bs-toggle="tab" data-bs-target="#tab_A" class="active">مشخصات</menu-page><point></point>
+                <menu-page data-bs-toggle="tab" data-bs-target="#tab_B">سایر اطلاعات</menu-page><point></point>
+                <menu-page data-bs-toggle="tab" data-bs-target="#tab_C">تغییر پسورد</menu-page><point></point>
+                <menu-page class="w-min-50" onclick="HelpAjax(@Model.FormId);" data-bs-toggle="tooltip" data-bs-title="راهنما">
+                    <span class="menu-firuze icofont-00x icofont-learn"></span>
+                </menu-page>
+                <menu-page class="w-min-50" onclick="ToggleFullscreen();" data-bs-toggle="tooltip" data-bs-title="تمام صفحه">
+                    <span class="menu-firuze icofont-00x icofont-expand"></span>
+                </menu-page>
+                <menu-page onclick="GoToTop();" class="w-min-50" data-bs-toggle="tooltip" data-bs-title="برگشت به بالا">
+                    <span class="menu-firuze icofont-00x icofont-stylish-up"></span>
+                </menu-page>
+                <menu-page class="bg-secondary" data-bs-toggle="tooltip" data-bs-title="برگشت به صفحه قبل">
+                    <select class="text-start bg-secondary text-light" onchange="GoToUrl(this.value);">
+                        @foreach (DataRow item in Model.formData.lastForms.Rows)
+                        {
+                            <option value="@item["NameForm"]">@item["Onvan"]</option>
+                        }
+                    </select>
+                </menu-page><point></point>
+                <button type="button" class="pos-Right btn_Icon Icon_Red icofont-2x icofont-curved-double-right d-md-none"
+                        data-bs-title="اسکرول به راست" onclick="ScrollRight('menu-page-btn');"></button>
+                <button type="button" class="pos-Left btn_Icon Icon_Red icofont-2x icofont-curved-double-left d-md-none"
+                        data-bs-title="اسکرول به چپ" onclick="ScrollLeft('menu-page-btn');"></button>
+            </div>
+        </div>
+    </footer-page>
+
+    <div class="tab-content">
+
+        <!-- ✅ تب پروفایل -->
+        <div class="tab-pane fade active show" id="tab_A">
+            @{
+                pagesitem = Model.formData.Pages.Select("RJ = 1").First();
+            }
+            <div class="OnvanSafhe">
+                <h6 class="shadow">@pagesitem["OnvanPage"]</h6>
+            </div>
+
+            @if (!string.IsNullOrEmpty(pagesitem["HeaderPage"].ToString()))
+            {
+                <div class="alert alert-secondary">
+                    @Html.Raw(HttpUtility.HtmlDecode(pagesitem["HeaderPage"].ToString()))
+                </div>
+            }
+
+            <div class="w-max-600 alert alert-primary border-info">
+                <form asp-antiforgery="true" method="post" data-ajax="true"
+                      enctype="multipart/form-data"
+                      data-ajax-confirm="آیا تصویر جدید ثبت گردد؟"
+                      data-ajax-Btn="UpLoadPicBtn"
+                      data-ajax-url="?handler=UpLoadPic"
+                      data-ajax-complete="CompleteResult">
+                    <input type="hidden" name="OldPic" value="@User["Pic"]" />
+                    <input type="submit" hidden id="UpLoadPicBtn" />
+                    <input class="d-none" type="file" id="PicUpload" name="PicUpload"
+                           accept=".jpg,.png,.bmp,.jpeg"
+                           onchange="GetPhoto(this,'PicName', 'PhotoPic'); ClickBtn('UpLoadPicBtn');" />
+                    @if (@User["Pic"].ToString() == ""){
+                        <img id="PhotoPic" class="rounded rounded-5 wh-max-150 d-block mx-auto cursor-pointer"
+                             src="/Uploads/Persons/K_0.jpg"
+                             onclick="ClickBtn('PicUpload');" />
+                    }
+                    else{
+                        <img id="PhotoPic" class="rounded rounded-5 wh-max-150 d-block mx-auto cursor-pointer"
+                             src="/Uploads/Persons/K_@User["Si_Person"]_@User["Pic"]"
+                             onclick="ClickBtn('PicUpload');" />
+                    }
+                    <span id="PicName">برای تغییر تصویر روی عکس کلیک کنید</span>
+
+                </form>
+                <hr />
+                <div class="row mt-2">
+                    <div class="col-6"><span class="control-label">نام</span>
+                        <input type="text" class="control-input text-center" name="FName" value="@User["FirstName"]" />
+                    </div>
+                    <div class="col-6">
+                        <span class="control-label">فامیلی</span>
+                        <input type="text" class="control-input text-center" name="LName" value="@User["LastName"]" />
+                    </div>
+                </div>
+                <div class="row mt-2">
+                    <div class="col-6">
+                        <span class="control-label">نام انگلیسی</span>
+                        <input type="text" class="control-input text-center" name="EnName" value="@User["EnglishName"]" />
+                    </div>
+                </div>
+                <div class="row mt-2">
+                    <div class="col-6">
+                        <span class="control-label">کد ملی</span>
+                        <input type="text" class="control-input text-center ltr" name="NationalCode" value="@User["NationalCode"]" />
+                    </div>
+                    <div class="col-6">
+                        <span class="control-label">پاسخگو</span>
+                        <input type="text" class="control-input text-center" name="Responsible" value="@User["Responsible"]" />
+                    </div>
+                </div>
+
+
+                <div class="row mt-2">
+                    <div class="col-6">
+                        <span class="control-label">موبایل</span>
+                        <input type="tel" onkeyup="onlyNumber(this)" class="control-input text-center ltr" name="Mobile" value="@User["MobileNo"]" />
+                    </div>
+                    <div class="col-6">
+                        <span class="control-label">تلفن</span>
+                        <input type="tel" onkeyup="onlyNumber(this)" class="control-input text-center ltr" name="Phone" value="@User["PhoneNo"]" />
+                    </div>
+                </div>
+
+                <div class="row mt-2">
+                    <div class="col-6">
+                        <span class="control-label">ایمیل</span>
+                        <input type="email" class="control-input text-center ltr" name="Email" value="@User["Email"]" />
+                    </div>
+                    <div class="col-6">
+                        <span class="control-label">کدپستی</span>
+                        <input type="text" class="control-input text-center ltr" name="Post" value="@User["Post"]" />
+                    </div>
+                </div>
+
+                <div>
+                    <span class="control-label">آدرس</span>
+                    <input type="text" class="control-input text-center" name="Adres" value="@User["Adres"]" />
+                </div>
+            </div>
+        </div>
+
+        <!-- ✅ سایر اطلاعات -->
+        <div class="tab-pane fade" id="tab_B">
+            @{
+                pagesitem = Model.formData.Pages.Select("RJ = 2").First();
+            }
+            <div class="OnvanSafhe">
+                <h6 class="shadow">@pagesitem["OnvanPage"]</h6>
+            </div>
+
+            @if (!string.IsNullOrEmpty(pagesitem["HeaderPage"].ToString()))
+            {
+                <div class="alert alert-secondary">
+                    @Html.Raw(HttpUtility.HtmlDecode(pagesitem["HeaderPage"].ToString()))
+                </div>
+            }
+
+            <div class="w-max-600 alert alert-primary border-info">
+                <div class="row mt-2">
+                    <div class="col-6"><span class="control-label">کد</span> <span class="control-text">@User["Cu_Person"]</span></div>
+                </div>
+
+                <div class="row mt-2">
+                    <div class="col-6"><span class="control-label">تاریخ شروع</span> <span class="control-text">@User["DateStart"]</span></div>
+                    <div class="col-6"><span class="control-label">آی پی</span> <span class="control-text">@User["IIP"]</span></div>
+                </div>
+
+                <div class="mt-2">
+                    <span class="control-label">آخرین ورودها</span>
+                    <select class="control-text">
+                        @foreach (DataRow item in Model.ListLogin.Rows)
+                        {
+                            <option value="@item["Si"]">@item["FullData"]</option>
+                        }
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <!-- ✅ تب تغییر پسورد -->
+        <div class="tab-pane fade" id="tab_C">
+            @{
+                pagesitem = Model.formData.Pages.Select("RJ = 3").First();
+            }
+            <div class="OnvanSafhe"><h6 class="shadow">@pagesitem["OnvanPage"]</h6></div>
+            @if (!string.IsNullOrEmpty(pagesitem["HeaderPage"].ToString()))
+            {
+                <div class="alert alert-secondary">@Html.Raw(HttpUtility.HtmlDecode(pagesitem["HeaderPage"].ToString()))</div>
+            }
+
+            <div class="alert alert-primary border-primary p-3 w-max-500 mx-auto">
+                <form asp-antiforgery="true" method="post" data-ajax="true"
+                      data-ajax-confirm="آیا اصلاح اطلاعات ذخیره گردد؟"
+                      data-ajax-Btn="UpdateBtn"
+                      data-ajax-url="?handler=UpdatePass"
+                      data-ajax-complete="CompleteResult">
+                    <div class="mb-2"><span class="control-text">@User["KarbarName"]</span></div>
+                    <div class="mb-2">
+                        <span class="control-label">نام کاربری</span>
+                        <input name="UserName" class="control-input text-center rounded-pill" value="@User["UserName"]" />
+                    </div>
+                    <div class="row">
+                        <div class="col-6"><span class="control-label">پسورد فعلی</span><input class="control-input text-center rounded-pill" type="password" name="PassNow" /></div>
+                        <div class="col-6"><span class="control-label">پسورد جدید</span><input class="control-input text-center rounded-pill" type="password" name="PassNew" /></div>
+                    </div>
+                    <div class="text-end mt-2">
+                        <button type="submit" id="UpdateBtn" class="btn_Icon Icon_Blue2 icofont icofont-2x icofont-checked" data-bs-toggle="tooltip" data-bs-title="ثبت شود"><span>ثبت شود</span><span class=""></span></button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+
+    </div>
+</div>

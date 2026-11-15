@@ -1,0 +1,16 @@
+﻿@model Sarmad.Pages.HomeModel
+@using System.Data;
+
+@{
+}
+@switch (@ViewData["Switch"])
+{
+    case "Forms":
+        @foreach (DataRow item in Model.ListLastForms.Rows)
+        {
+            <a href='/@item["NameForm"]' class="BTN btn_Normal btn_Firuze w-min-150 py-3">
+                @item["Onvan"]
+            </a>
+        }
+        break;
+}

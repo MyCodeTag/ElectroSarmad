@@ -1,0 +1,224 @@
+﻿@page
+@model Sarmad.Pages.Base.PersonsModel
+@using System.Data;
+@using System.Web
+@{
+    DataRow pagesitem;
+}
+
+<div>
+    <footer-page class="nav nav-tabs border-top border-light">
+        <div class="w-inline">
+            <div id="menu-page-btn">
+                <menu-page id="FastAlarm" class="dis-none" data-bs-toggle="tooltip" data-bs-title="گزارش پیام جدید" onclick="$('#waitbody').css('display', 'flex'); GoToUrl('/Dayli/MsgCenter');">
+                    <span class="text-danger icofont-00x icofont-bell-alt"></span>
+                    <span id="FastAlarmMsg">10 تا پیام جدید داری</span>
+                </menu-page>
+                <menu-page class="w-min-50" data-bs-toggle="tooltip" data-bs-title="منو" onclick="MenuToggel();">
+                    <span class="menu-firuze icofont-00x icofont-listine-dots icofont-rotate-180"></span>
+                </menu-page><point></point>
+                <menu-page data-bs-toggle="tab" data-bs-target="#tab_A" class="active">اشخاص</menu-page><point></point>
+                <menu-page data-bs-toggle="tab" data-bs-target="#tab_B">کاربران</menu-page><point></point>
+                <menu-page class="w-min-50" onclick="HelpAjax(@Model.FormId);" data-bs-toggle="tooltip" data-bs-title="راهنما">
+                    <span class="menu-firuze icofont-00x icofont-learn"></span>
+                </menu-page>
+                <menu-page class="w-min-50" onclick="ToggleFullscreen();" data-bs-toggle="tooltip" data-bs-title="تمام صفحه">
+                    <span class="menu-firuze icofont-00x icofont-expand"></span>
+                </menu-page>
+                <menu-page onclick="GoToTop();" class="w-min-50" data-bs-toggle="tooltip" data-bs-title="برگشت به بالا">
+                    <span class="menu-firuze icofont-00x icofont-stylish-up"></span>
+                </menu-page>
+                <menu-page class="bg-secondary" data-bs-toggle="tooltip" data-bs-title="برگشت به صفحه قبل">
+                    <select class="text-start bg-secondary text-light" onchange="GoToUrl(this.value);">
+                        @foreach (DataRow item in Model.formData.lastForms.Rows)
+                        {
+                            <option value="@item["NameForm"]">@item["Onvan"]</option>
+                        }
+                    </select>
+                </menu-page><point></point>
+                <button type="button" class="pos-Right btn_Icon Icon_Red icofont-2x icofont-curved-double-right d-md-none"
+                        data-bs-title="اسکرول به راست" onclick="ScrollRight('menu-page-btn');"></button>
+                <button type="button" class="pos-Left btn_Icon Icon_Red icofont-2x icofont-curved-double-left d-md-none"
+                        data-bs-title="اسکرول به چپ" onclick="ScrollLeft('menu-page-btn');"></button>
+            </div>
+        </div>
+    </footer-page>
+
+    <div class="tab-content">
+
+        <!-- ✅ تب اشخاص -->
+        <div class="tab-pane fade active show" id="tab_A">
+            @{
+                pagesitem = Model.formData.Pages.Select("RJ = 1").First();
+            }
+            <div class="OnvanSafhe">
+                <h6 class="shadow">@pagesitem["OnvanPage"]</h6>
+            </div>
+
+            @if (!string.IsNullOrEmpty(pagesitem["HeaderPage"].ToString()))
+            {
+                <div class="alert alert-secondary">
+                    @Html.Raw(HttpUtility.HtmlDecode(pagesitem["HeaderPage"].ToString()))
+                </div>
+            }
+
+            <div class="w-max-1000 mx-auto">
+                <form method="get" data-ajax="true" data-ajax-method="get"
+                      data-ajax-begin="MsgFormSpinner('A','ثبت اطلاعات اشخاص', 'چند لحظه صبر کنید');"
+                      data-ajax-url="?handler=FormSabtPerson"
+                      data-ajax-update="#MsgForm_A_MATN">
+                    <input type="submit" hidden id="FormSabtPersonBtn" name="ID" />
+                    <div class="px-2 text-end">
+                        <button type="button" class="BTN btn_Pill btn_Blue2 w-min-200" onclick="ClickBtnSimpl('FormSabtPersonBtn','0');"><span>افزودن شخص جدید</span><span class="icofont-00x icofont-plus float-end"></span></button>
+                    </div>
+                </form>
+
+                <div class="filterArea">
+                    <form asp-antiforgery="true" method="post" data-ajax-method="post" data-ajax="true"
+                              data-ajax-begin="SpinnerShow('ListPersons', 'در حال بارگذاری لیست اشخاص');"
+                              data-ajax-url="?handler=ListPersons"
+                              data-ajax-update="#ListPersons">
+                            <div class="row">
+                                <div class="col-6 col-sm-3">
+                                <div class="pb-2">
+                                    <span class="control-label">وضعیت</span>
+                                        <select name="Act" class="control-input">
+                                            <option value="">همه</option>
+                                            <option value="Y">فعال</option>
+                                            <option value="N">غیر فعال</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-6 col-sm-3">
+                                    <div class="pb-2">
+                                        <span class="control-label">محدودیت</span>
+                                        <input type="text" class="control-input text-center" name="Filter" value="" />
+                                    </div>
+
+                                </div>
+                                <div class="col-6 col-sm-3">
+                                <div class="pb-2">
+                                    <span class="control-label">ترتیب نمایش</span>
+                                    <select name="Sort" class="control-input">
+                                        <option value="A">نام</option>
+                                        <option value="B" selected>کد</option>
+                                        <option value="C">شماره همراه</option>
+                                        <option value="D">تلفن</option>
+                                        <option value="E">آدرس</option>
+                                    </select>
+                                </div>
+
+                                </div>
+                                <div class="col-6 col-sm-3">
+                                    <div class="text-end p-3">
+                                        <button type="submit" data-bs-toggle="tooltip" data-bs-title="گزارش" class="BTN btn_Pill btn_Blue2 w-min-200"><span>نمایش گزارش </span><i class="icofont-2x icofont-search-2"></i></button>
+                                    </div>
+                                </div>
+                            </div>
+                    </form>
+                </div>
+            </div>
+            <div class="mt-3" id="ListPersons">
+                <div class="text-center wrapword text-warning">برای تهیه گزارش از فیلتر مناسب استفاده کنید.</div>
+            </div>
+        </div>
+
+        <!-- ✅ تب کاربران -->
+        <div class="tab-pane fade" id="tab_B">
+            @{
+                pagesitem = Model.formData.Pages.Select("RJ = 2").First();
+            }
+            <div class="OnvanSafhe">
+                <h6 class="shadow">@pagesitem["OnvanPage"]</h6>
+            </div>
+
+            @if (!string.IsNullOrEmpty(pagesitem["HeaderPage"].ToString()))
+            {
+                <div class="alert alert-secondary">
+                    @Html.Raw(HttpUtility.HtmlDecode(pagesitem["HeaderPage"].ToString()))
+                </div>
+            }
+
+            <div class="w-max-1000 mx-auto">
+                <form method="get" data-ajax="true" data-ajax-method="get"
+                      data-ajax-begin="MsgFormSpinner('A','ثبت اطلاعات کاربران', 'چند لحظه صبر کنید');"
+                      data-ajax-url="?handler=FormSabtKarbaran"
+                      data-ajax-update="#MsgForm_A_MATN">
+                    <input type="submit" hidden id="FormSabtKarbaranBtn" name="ID" />
+                    <div class="px-2 text-end">
+                        <button type="button" class="BTN btn_Pill btn_Blue2 w-fix-200" onclick="ClickBtnSimpl('FormSabtKarbaranBtn','0');"><span>افزودن کاربر جدید</span><span class="icofont-00x icofont-plus float-end"></span></button>
+                    </div>
+                </form>
+
+                <div class="filterArea">
+                    <div class=" w-100 py-2 m-auto ">
+                        <form asp-antiforgery="true" method="post" data-ajax-method="post" data-ajax="true"
+                              data-ajax-begin="SpinnerShow('ListKarbaran', 'در حال بارگذاری لیست کاربران');"
+                              data-ajax-url="?handler=ListKarbaran"
+                              data-ajax-update="#ListKarbaran">
+                            <div class="row">
+                                <div class="col-6 col-sm-3">
+                                    <div class="pb-2">
+                                        <span class="control-label">وضعیت</span>
+                                        <select name="Act" class="control-input">
+                                            <option value="">همه</option>
+                                            <option value="Y">فعال</option>
+                                            <option value="N">غیر فعال</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-6 col-sm-3">
+                                    <div class="pb-2">
+                                        <span class="control-label">گروه کاربر</span>
+                                        <select name="Group" class="control-input">
+                                            <option value="">همه</option>
+                                            @foreach (DataRow item in Model.ListGRP.Rows)
+                                            {
+                                                <option value="@item["Code"]">@item["Sharh"]</option>
+                                            }
+                                        </select>
+                                    </div>
+
+                                </div>
+                                <div class="col-6 col-sm-3">
+                                    <div class="pb-2">
+                                        <span class="control-label">محدودیت</span>
+                                        <input type="text" class="control-input text-center" name="Filter" value="" />
+                                    </div>
+                                </div>
+                                <div class="col-6 col-sm-3">
+                                    <div class="pb-2">
+                                        <span class="control-label">ترتیب نمایش</span>
+                                        <div class="d-flex">
+                                            <select name="Sort" class="control-input">
+                                                <option value="A">نام</option>
+                                                <option value="B" selected>کد</option>
+                                                <option value="C">شماره همراه</option>
+                                                <option value="D">تلفن</option>
+                                                <option value="E">نام کاربری</option>
+                                                <option value="F">تاریخ شروع</option>
+                                                <option value="G">آخرین ویزیت</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+
+
+
+                            </div>
+                            <div class="text-end p-3">
+                                <button type="submit" data-bs-toggle="tooltip" data-bs-title="گزارش" class="BTN btn_Pill btn_Blue2 w-min-200"><span>نمایش گزارش </span><i class="icofont-2x icofont-search-2"></i></button>
+                            </div>
+
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <div class="mt-3" id="ListKarbaran">
+                <div class="text-center wrapword text-warning">برای تهیه گزارش از فیلتر مناسب استفاده کنید.</div>
+            </div>
+        </div>
+
+
+    </div>
+</div>

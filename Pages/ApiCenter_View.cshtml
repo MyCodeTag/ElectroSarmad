@@ -1,0 +1,63 @@
+﻿
+@model Sarmad.Pages.ApiCenterModel
+@using System.Web;
+@using System.Data;
+@using Sarmad.Services;
+@{
+}
+
+@switch (@ViewData["Switch"])
+{
+    case "Help":
+        <div class="card">
+            <div class="card-header card-header-best">
+                <div class="form-check form-switch">
+                    <label for="HelpShow">راهنما </label>
+                    <input data-bs-toggle="tooltip" data-bs-title="نمایش" id="HelpShow" type="checkbox" class="form-check-input font-20 cursor-pointer" onclick="AreaToggel('HelpAreaMatn');" checked />
+                </div>
+            </div>
+            <div class="card-body font-20" id="HelpAreaMatn" style="font-family: Calibri;">
+@*                 @foreach (var LST in Model.AE_List)
+                {
+                    <div class="d-flex justify-content-between p-2 my-2 rounded-3 bg-formHF cursor-pointer" onclick="AreaToggel('Cont_@LST.E'); ChangIcon('hlpIcn_@LST.E', 'icofont-caret-down', 'icofont-caret-up')">
+                        <h5 class="text-primary font-bold mt-2">@LST.A</h5>
+                        <span id="hlpIcn_@LST.E" class="text-brown icofont-2x my-auto icofont-caret-down"></span>
+                    </div>
+                    <div class="pb-5 dis-none RawImg" id="Cont_@LST.E">
+                        <div>@Html.Raw(HttpUtility.HtmlDecode(LST.B))</div>
+                    </div>
+                }
+ *@            </div>
+        </div>
+        break;
+
+    case "Select":
+@*         @foreach (var K in Model.AE_List)
+        {
+            <option value="@K.A">@K.B</option>
+        }
+ *@        break;
+
+    case "ListKala":
+        @if (Model.ListData.Rows.Count==0){
+            <option value="" disabled selected data-Vahed="">کالایی پیدا نشد</option>
+        }else{
+            <option value="" disabled selected data-Vahed="">انتخاب کنید --> @Model.ListData.Rows.Count کالا</option>
+            @if (ViewData["Sort"].ToString() == "Code")
+            {
+                @foreach (DataRow item in Model.ListData.Rows)
+                {
+                    <option value="@item["Si"]" data-Vahed="@item["Vahed"]" data-Code="@item["Code"]">@item["Code"] - (@item["KalaName"])</option>
+                }
+            }
+            else
+            {
+                @foreach (DataRow item in Model.ListData.Rows)
+                {
+                    <option value="@item["Si"]" data-Vahed="@item["Vahed"]" data-Code="@item["Code"]">@item["KalaName"] - (@item["Code"])</option>
+                }
+            }
+        }
+    break;
+
+}

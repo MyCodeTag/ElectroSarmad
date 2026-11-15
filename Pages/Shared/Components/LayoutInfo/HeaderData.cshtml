@@ -1,0 +1,25 @@
+﻿@model Sarmad.Models.LayoutDataModel
+
+<header class="text-white px-2">
+    <div class="d-flex justify-content-between pt-3">
+        <div class="d-flex">
+            <button type="button" class="btn_Icon Icon_Blue3 icofont-2x icofont-listine-dots icofont-rotate-180" data-bs-toggle="tooltip" data-bs-title="منو" onclick="MenuToggel();"></button>
+            @if (Model.listNewMsg.Rows.Count != 0)
+            {
+                <span onmouseenter="Rotate(this,'Z');" onclick="$('#waitbody').css('display', 'flex'); GoToUrl('/Dayli/MsgCenter');" class="ms-2 mt-3 cursor-pointer">
+                    <span class="text-warning icofont-2x icofont-alarm"></span>@Model.listNewMsg.Rows.Count
+                </span>
+            }
+        </div>
+        <div class="">
+            <h5>@Model.formSetup.Title</h5>
+        </div>
+        <div class="">
+            <a class="font-16" asp-area="" asp-page="/Home">
+                <span class="cursor-pointer" style="font-family: DastNevis; color: #a3b2eb">سرمد</span>
+            </a>
+            <a class=" text-white text_line22" style="font-family: DastNevis;" asp-page="/Other/Profile">سلام @Model.formSetup.UserName <span class="icofont icofont-simple-smile text-warning"></span></a>
+        </div>
+    </div>
+</header>
+

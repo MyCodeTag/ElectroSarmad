@@ -1,0 +1,954 @@
+﻿@model Sarmad.Pages.Dayli.MsgCenterModel
+@using System.Web;
+@using System.Data;
+@{
+    var RJ = 0;
+    var ZF = "";
+}
+@switch (@ViewData["Switch"])
+{
+    case "ListMokhatab":
+        <div class="row">
+            @if(ViewData["KND"].ToString() !="ADD")
+            {
+                @if (@ViewData["TAKGRP"].ToString() == "TAK")
+                {
+                    @foreach (DataRow item in Model.ListKarbaran.Rows)
+                    {
+                        <div class="col-12 col-sm-6">
+                            <div class="areaKarbar cursor-pointer" title="انتخاب مخاطب" onclick="SelectPerson_3('@ViewData["KND"]', '@item["Si"]', '@item["Pic"]', '@item["KarbarName"]', ' @item["Semat"]'); RowSelect(this); AreaUp('ModalForm_B');  AreaClear('MsgForm_B_MATN');">
+                                <div class="PicKarbar colorSecondary">
+                                    @if (@item["Pic"].ToString() != "")
+                                    {
+                                        <img src="/Uploads/Persons/@item["Pic"]" class="rounded rounded-5 w-fix-50 h-fix-50" />
+                                    }
+                                    else
+                                    {
+                                        <img src="/Uploads/Persons/P_0.jpg" class="rounded rounded-5 w-fix-50 h-fix-50" />
+                                    }
+                                </div>
+                                <div class="InfoKarbar">
+                                    <span class="control-label">
+                                        <span class="text-white-50">سمت: </span><span> @item["Semat"]</span>
+                                    </span>
+                                    <div class="colorSecondary">
+                                        @item["KarbarName"]
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                }
+                else
+                {
+                    <div class=" text-end">
+                        <button class="BTN btn_Pill btn_Blue2 w-fix-100" onclick="SelectAllMokhatab_3('@Model.ListKarbaran.Rows.Count');">انتخاب همه </button>
+                    </div>
+                    RJ = 0;
+                    @foreach (DataRow item in Model.ListKarbaran.Rows)
+                    {
+                        <div class="col-12 col-sm-6">
+                            <div id="ListMokhatab_@RJ" class="areaKarbar cursor-pointer" title="انتخاب مخاطب" onclick="SelectPerson_3('@ViewData["KND"]', '@item["Si"]', '@item["Pic"]', '@item["KarbarName"]', ' @item["Semat"]'); RowSelect(this);">
+                                <div class="PicKarbar colorSecondary">
+                                    @if (@item["Pic"].ToString() != "")
+                                    {
+                                        <img src="/Uploads/Persons/@item["Pic"]" class="rounded rounded-5 w-fix-50 h-fix-50" />
+                                    }
+                                    else
+                                    {
+                                        <img src="/Uploads/Persons/P_0.jpg" class="rounded rounded-5 w-fix-50 h-fix-50" />
+                                    }
+                                </div>
+                                <div class="InfoKarbar">
+                                    <span class="control-label">
+                                        <span class="text-white-50">سمت: </span><span> @item["Semat"]</span>
+                                    </span>
+                                    <div class="colorSecondary text-start">
+                                        <span>@item["KarbarName"]</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        RJ++;
+                    }
+                }
+            }
+            else{
+                @foreach (DataRow item in Model.ListKarbaran.Rows)
+                {
+                    <div class="col-12 col-sm-6">
+                        <div title="انتخاب مخاطب" onclick="AddPerson_3('@item["Si"]', '@item["Pic"]', '@item["KarbarName"]', ' @item["Semat"]');">
+                            <div id="ReplyListMokhatab_@item["Si"]">
+                                <div class="areaKarbar cursor-pointer">
+                                    <div class="PicKarbar colorSecondary">
+                                        @if (@item["Pic"].ToString() != "")
+                                        {
+                                            <img src="/Uploads/Persons/@item["Pic"]" class="rounded rounded-5 w-fix-50 h-fix-50" />
+                                        }
+                                        else
+                                        {
+                                            <img src="/Uploads/Persons/P_0.jpg" class="rounded rounded-5 w-fix-50 h-fix-50" />
+                                        }
+                                    </div>
+                                    <div class="InfoKarbar">
+                                        <span class="control-label">
+                                            <span class="text-white-50">سمت: </span><span> @item["Semat"]</span>
+                                        </span>
+                                        <div class="colorSecondary text-start">
+                                            <span>@item["KarbarName"]</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+            }
+        </div>
+
+        break;
+
+
+    case "MsgReports":
+        <div class="d-flex flex-wrap justify-content-between border-top border-secondary">
+            <div class="Area_Count w-fix-200">
+                <span>تعداد : </span><span>@Model.ListData.Rows.Count </span>
+            </div>
+            <div class="flex-fill text-end">
+                <div class="Area_Print w-max-350">
+                    <form method="post" data-ajax-method="post" data-ajax="true"
+                        data-ajax-begin="SpinnerShowForm('در حال آماده سازی فایل گزارش');"
+                        data-ajax-url="?handler=Chap_@ViewData["Switch"]"
+                        data-ajax-complete="ControlChap('Chap_@ViewData["Switch"]Btn');">
+                        <input type="hidden" name="ComText" value="@ViewData["ComText"]" />
+                        <input type="submit" hidden id="Chap_@ViewData["Switch"]Btn" name="Chap" value="" />
+                        <div class="d-flex p-2 pb-0 justify-content-end">
+                            <input class="control-input w-100" name="OnvanChap" placeholder="عنوانی برای چاپ بنویسید" value="" />
+                            <button type="button" title="چاپ" class="btn_Icon Icon_Gray icofont-2x icofont-print" onclick="ClickBtnSimpl('Chap_@ViewData["Switch"]Btn', 'CHAP');"></button>
+                            <button type="button" title="پی دی اف" class="btn_Icon Icon_Gray icofont-2x icofont-file-pdf" onclick="ClickBtnSimpl('Chap_@ViewData["Switch"]Btn', 'PDF');"></button>
+                            <button type="button" title="اکسل" class="btn_Icon Icon_Gray icofont-2x icofont-file-excel" onclick="ClickBtnSimpl('Chap_@ViewData["Switch"]Btn', 'XLS');"></button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+
+        <div class="header_Table">
+            <button type="button" class="btn_Icon footer_Right Icon_Red icofont-00x icofont-curved-double-right" title="اسکرول به راست" onclick="ScrollRight('@ViewData["Switch"]_FT');"></button>
+            <button type="button" class="btn_Icon footer_Left Icon_Red icofont-00x icofont-curved-double-left" title="اسکرول به چپ" onclick="ScrollLeft('@ViewData["Switch"]_FT');"></button>
+            <div id="@ViewData["Switch"]_FT" class="overflow-hidden" onscroll="ScrollSlave(this, '@ViewData["Switch"]_MS');">
+                <table class="table mb-0">
+                    <thead>
+                        <tr>
+                            <th><span>#</span></th>
+                            <th><span class="w-fix-200"> مخاطب</span></th>
+                            <th><span class="w-fix-50">صندوق</span></th>
+                            <th><span class="w-fix-300">موضوع</span></th>
+                            <th><span class="w-fix-50">نمایش</span></th>
+                            <th><span class="w-fix-50">پین</span></th>
+                            @if (ViewData["KndReport"].ToString() == "Detail"){
+                                <th><span class="w-fix-50">جدید</span></th>
+                            }
+                            <th><span class="w-fix-350">پیام</span></th>
+                            <th><span class="w-fix-50">نوع</span></th>
+                            <th><span class="w-fix-50">وضعیت</span></th>
+                            <th><span class="w-fix-50">پیامک</span></th>
+                            <th><span class="w-fix-100">مرجع</span></th>
+                            <th><span class="w-fix-180">زمان</span></th>
+                        </tr>
+                    </thead>
+                </table>
+            </div>
+        </div>
+        <div class="overflow-auto" id="@ViewData["Switch"]_MS" onscroll="ScrollSlave(this, '@ViewData["Switch"]_FT');">
+            <table class="table">
+                <thead class="header_Tablehiden">
+                    <tr>
+                        <th><span>#</span></th>
+                        <th><span class="w-fix-200"> مخاطب</span></th>
+                        <th><span class="w-fix-50">صندوق</span></th>
+                        <th><span class="w-fix-300">موضوع</span></th>
+                        <th><span class="w-fix-50">نمایش</span></th>
+                        <th><span class="w-fix-50">پین</span></th>
+                        @if (ViewData["KndReport"].ToString() == "Detail")
+                        {
+                            <th><span class="w-fix-50">جدید</span></th>
+                        }
+                        <th><span class="w-fix-350">پیام</span></th>
+                        <th><span class="w-fix-50">نوع</span></th>
+                        <th><span class="w-fix-50">وضعیت</span></th>
+                        <th><span class="w-fix-50">پیامک</span></th>
+                        <th><span class="w-fix-100">مرجع</span></th>
+                        <th><span class="w-fix-180">زمان</span></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (DataRow item in Model.ListData.Rows)
+                    {
+                        { RJ++;  }
+                        <tr onclick="RowSelect(this);">
+                            <td class="text-danger">@RJ</td>
+
+                            @if (@item["Id_User"].ToString() != ViewData["UserSi"].ToString())
+                            {
+                                <td>
+                                    <span class="w-fixC-200 d-flex">
+                                        <img class="rounded rounded-5 w-fix-50 h-fix-50" src="/Uploads/Persons/@item["PicWriter"]" />
+                                        <div class="ps-2 pt-3">
+                                            <span> @item["NameWriter"]</span>
+                                        </div>
+                                    </span>
+                                </td>
+                                <td>
+                                    <span class="w-fixC-50 btn_Icon Icon_Mor icofont-2x icofont-hand-left" title="صندوق ورودی"></span>
+                                </td>
+                            }
+                            else{
+                                <td>
+                                    <span class="w-fixC-200 d-flex">
+                                        <img class="rounded rounded-5 w-fix-50 h-fix-50" src="/Uploads/Persons/@item["PicMokhatab"]" />
+                                        <div class="ps-2 pt-3">
+                                            <span> @item["NameMokhatab"]</span>
+                                        </div>
+                                    </span>
+                                </td>
+                                <td>
+                                    <span class="w-fixC-50 btn_Icon Icon_Blue icofont-2x icofont-hand-right" title="صندوق ارسالی"></span>
+                                </td>
+                            }
+                            <td><span class="w-fixC-300 text-start">@item["Onvan"]<span class="text_line24 font-14">@item["Owner"]</span></span></td>
+                            <td><span class="w-fixC-50"><button type="button" class="btn_Icon Icon_Mor icofont-2x icofont-list" title="نمایش گفتگوها" onclick="ClickBtnSimpl('MsgDtListBtn', '@item["Id_Hd"]', 'MsgDtOrder', 'Desc');"></button></span></td>
+                            <td>
+                                <span class="w-fixC-50">
+                                @if (@item["Pin"].ToString() == "Y")
+                                {
+                                    <button type="button" class="btn_Icon Icon_Orang icofont-2x icofont-tack-pin" title="پین شده" onclick="ClickBtnSimpl('ChangPinBtn', '@item["Id_Hd"]'); ChangIcon(this, 'Icon_Orang', 'Icon_Gray');"></button>
+                                }
+                                else
+                                {
+                                    <button type="button" class="btn_Icon Icon_Gray icofont-2x icofont-tack-pin" title="پین شود" onclick="ClickBtnSimpl('ChangPinBtn', '@item["Id_Hd"]'); ChangIcon(this, 'Icon_Orang', 'Icon_Gray');"></button>
+                                }
+                                </span>
+                            </td>
+                            @if (ViewData["KndReport"].ToString() == "Detail")
+                            {
+                                <td>
+                                    <span class="w-fixC-50">
+                                    @if (@item["Id_User"].ToString() != ViewData["UserSi"].ToString())
+                                    {
+                                        @if (@item["New"].ToString() == "Y")
+                                        {
+                                            <button type="button" class="btn_Icon Icon_Orang icofont-2x icofont-alarm" title="خوانده شد" onclick="ClickBtnSimpl('MsgReadBtn', '@item["Si"]'); ChangIcon(this, 'Icon_Orang', 'Icon_Gray');"></button>
+                                        }
+                                        else
+                                        {
+                                            <button type="button" class="btn_Icon Icon_Gray icofont-2x icofont-alarm" title="خوانده شده"></button>
+                                        }
+                                    }
+                                    else
+                                    {
+                                        <button type="button" class="btn_Icon Icon_Gray icofont-2x icofont-alarm" title="خوانده شده"></button>
+                                    }
+                                    </span>
+                                </td>
+                            }
+                            <td><span class="w-fixC-350 h-max-200 scrollAmudi">@Html.Raw(HttpUtility.HtmlDecode(@item["Matn"].ToString()))</span></td>
+                            <td>
+                                <span class="w-fixC-50">
+                                    @if (@item["Knd"].ToString() == "P")
+                                    {
+                                        <span class="icofont icofont-2x icofont-user-alt-2 text-primary" title="پرونده دونفره"></span>
+                                    }
+                                    else
+                                    {
+                                        @if (@item["Knd"].ToString() == "G")
+                                        {
+                                            <span class="icofont icofont-2x icofont-users-alt-2 text-primary" title="پرونده گروهی"></span>
+                                        }
+                                        else
+                                        {
+                                            @if (@item["Knd"].ToString() == "F")
+                                            {
+                                                <span class="icofont icofont-2x icofont-business-man text-success" title="گفتگوی آزاد"></span>
+                                            }
+                                            else
+                                            {
+                                                <span class="icofont icofont-2x icofont-automation text-primary" title="پرونده سیستمی"></span>
+                                            }
+                                        }
+                                    }
+                                </span>
+                            </td>
+                            <td>
+                                <span class="w-fixC-50">
+                                    @if (@item["Active"].ToString() == "Y")
+                                    {
+                                        <button type="button" class="btn_Icon Icon_Green icofont-2x icofont-unlocked" title="گفتگو فعال است. بایگانی شود" onclick="ClickBtnSimpl('ChangActBtn', '@item["Id_Hd"]'); ChangIcon(this, 'text-danger', 'text-primary');"></button>
+                                    }
+                                    else
+                                    {
+                                        <button type="button" class="btn_Icon Icon_Gray icofont-2x icofont-lock" title="گفتگو بایگانی شده است. فعال شود" onclick="ClickBtnSimpl('ChangActBtn', '@item["Id_Hd"]'); ChangIcon(this, 'text-danger', 'text-primary');"></button>
+                                    }
+
+                                </span>
+                            </td>
+                            <td>
+                                <span class="w-fixC-50">
+                                    @if (@item["Id_User"].ToString() == ViewData["UserSi"].ToString())
+                                    {
+                                        <button type="button" class="btn_Icon Icon_Blue icofont-2x icofont-send-mail" title="ارسال پیامک" onclick="ClickBtnSimpl('SndSmsBtn', '@item["Id_Hd"]');"></button>
+                                    }
+                                </span>
+                            </td>
+                            <td><span class="w-fixC-100">@item["Ref"]/@item["Ref_Id"]</span></td>
+                            <td><span class="w-fixC-180 ltr">@item["TimeWrite"]</span></td>
+                        </tr>
+                    }
+
+                </tbody>
+            </table>
+        </div>
+
+        <form hidden asp-antiforgery="true" method="post" data-ajax="true" data-ajax-method="post"
+              data-ajax-confirm="آیا این پیام برای مخاطب پیامک شود؟ "
+              data-ajax-Btn="SndSmsBtn"
+              data-ajax-begin="SpinnerShowForm('چند لحظه صبر کنید');"
+              data-ajax-url="?handler=SndSms"
+              data-ajax-complete="CompleteResult">
+            <input type="submit" hidden name="HDID" value="0" id="SndSmsBtn" />
+        </form>
+        <form hidden asp-antiforgery="true" method="post" data-ajax="true" data-ajax-method="post"
+              data-ajax-url="?handler=ChangPin">
+            <input type="submit" hidden name="Id_Msg" value="0" id="ChangPinBtn" />
+        </form>
+
+        <form hidden asp-antiforgery="true" method="post" data-ajax="true" data-ajax-method="post"
+              data-ajax-confirm="آیا از تغییر وضعیت این گفتگو مطمئن هستید"
+              data-ajax-Btn="ChangActBtn"
+              data-ajax-begin="SpinnerShowForm('چند لحظه صبر کنید');"
+              data-ajax-url="?handler=ChangAct"
+              data-ajax-complete="CompleteResult">
+            <input type="submit" hidden name="ID" value="0" id="ChangActBtn" />
+        </form>
+
+        break;
+
+
+
+    case "ReplyList":
+
+        <div class="reportfilter mt-3">
+            <div class="text-start text-white-50">موضوع گفتگو:</div>
+            <h4 class="text-Yellow">@Model.RowData["Onvan"]</h4>
+        </div>
+
+        <div class="d-flex flex-wrap">
+            @if (@Model.RowData["Knd"].ToString() != "F"){
+                <div class="w-max-350 p-1">
+                    <div class="areaKarbar">
+                        <div class="PicKarbar colorPrimary"><img src="/Uploads/Persons/@Model.RowData["PicOwner"]" class="" /> </div>
+                        <div class="InfoKarbar">
+                            <span class="control-labelDark">مجری:</span>
+                            <div class="colorPrimary">@Model.RowData["Owner"]</div>
+                        </div>
+                    </div>
+                </div>
+            }
+            @if (@Model.ListKarbaran.Rows.Count > 2 ){
+                <div class="flex-fill pt-sm-5 px-2">
+                    <div class="text-end pe-3">
+                        <button id="ReplayNewBtn" type="button" class="Btn btn_Top btn_Gray py-1 w-fix-250"
+                                onclick="AreaToggel('AreaMokhatabReplyList'); ChangIcon('iconMokatabUpDown', 'icofont-expand-alt', 'icofont-collapse');">
+                            <span>نمایش لیست مخاطبین</span>
+                            <span id="iconMokatabUpDown" class="icofont-2x icofont-expand-alt float-end"></span>
+                        </button>
+                    </div>
+                    <div id="AreaMokhatabReplyList" class="ReportSaz">
+                        <div class="flex-fill d-flex flex-wrap justify-content-center" id="MokhatabReplyList">
+                            @foreach (DataRow item in Model.ListKarbaran.Rows)
+                            {
+                                if (@item["Si"].ToString() != Model.RowData["Id_Owner"].ToString())
+                                {
+                                    <div class="w-max-350 p-1" id="ReplyListMokhatab_@item["Si"].ToString()">
+                                        <div class="areaKarbar">
+                                            <div class="PicKarbar colorSecondary"><img src="/Uploads/Persons/@item["PicUser"]" class="" /> </div>
+                                            <div class="InfoKarbar">
+                                                <span class="control-label"></span>
+                                                <div class="colorSecondary">
+                                                    @item["FullName"]
+                                                    @if (@item["Si"].ToString() == ViewData["UserSi"].ToString())
+                                                    {
+                                                        <button type="button" class="btn_Icon btn_Pill  p-0 float-end Icon_Red icofont-2x icofont-delete" title="ترک گفتگو" onclick="ClickBtnSimpl('DeletMokhatabBtn','@item["Si"]')"></button>
+                                                    }
+
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                }
+                            }
+                        </div>
+                    </div>
+                </div>
+            }
+            else
+            {
+                <div class="flex-fill" id="MokhatabReplyList">
+                    @if (@Model.RowData["Knd"].ToString() == "F")
+                    {
+                        @foreach (DataRow item in Model.ListKarbaran.Rows)
+                        {
+                            @if (@item["Si"].ToString() != ViewData["UserSi"].ToString())
+                            {
+                                <div class="w-max-350 p-1" id="ReplyListMokhatab_@item["Si"].ToString()">
+                                    <div class="areaKarbar">
+                                        <div class="PicKarbar colorSecondary"><img src="/Uploads/Persons/@item["PicUser"]" class="" /> </div>
+                                        <div class="InfoKarbar">
+                                            <span class="control-label"></span>
+                                            <div class="colorSecondary">
+                                                @item["FullName"]
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+                       }
+                    }
+                    else{
+                        @foreach (DataRow item in Model.ListKarbaran.Rows)
+                        {
+                            if (@item["Si"].ToString() != Model.RowData["Id_Owner"].ToString())
+                            {
+                                <div class="w-max-350 p-1" id="ReplyListMokhatab_@item["Si"].ToString()">
+                                    <div class="areaKarbar">
+                                        <div class="PicKarbar colorSecondary"><img src="/Uploads/Persons/@item["PicUser"]" class="" /> </div>
+                                        <div class="InfoKarbar">
+                                            <span class="control-label"></span>
+                                            <div class="colorSecondary">
+                                                @item["FullName"]
+                                                @if (@item["Si"].ToString() == ViewData["UserSi"].ToString())
+                                                {
+                                                    <button type="button" class="btn_Icon btn_Pill  p-0 float-end Icon_Red icofont-00x icofont-delete" title="ترک گفتگو" onclick="ClickBtnSimpl('DeletMokhatabBtn','@item["Si"]')"></button>
+                                                }
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+                        }
+                    }
+           
+                </div>
+            }
+        </div>
+
+
+        <div class="filterArea">
+            <div class="d-flex justify-content-between">
+                @if (@Model.RowData["Knd"].ToString() == "S")
+                {
+                    <div>
+                        <span class="text-danger icofont-2x icofont-bell-alt"></span>
+                        <span class="">پرونده سیستمی </span>
+                    </div>
+                }
+                else
+                {
+                    @if (Model.RowData["Active"].ToString() == "Y")
+                    {
+                        <button id="ReplayNewBtn" type="button" class="ms-3 Btn btn_Top btn_Gray py-1 w-fix-150"
+                        onclick="AreaToggel('AreaReplyMsg'); ChangIcon('iconRepUpDown', 'icofont-expand-alt', 'icofont-collapse');">
+                            <span>نوشتن پاسخ</span>
+                            <span id="iconRepUpDown" class="icofont-2x icofont-expand-alt float-end"></span>
+                        </button>
+                    }
+                    else
+                    {
+                        <div>
+                            <span class="text-danger icofont-2x icofont-bell-alt"></span>
+                            <span class="">این گفتگو بایگانی شده است و امکان ارسال پیام در آن را ندارید </span>
+                        </div>
+                    }
+                }
+
+                @if (Model.RowData["Id_Owner"].ToString() == @ViewData["UserSi"].ToString() || Model.RowData["MNG"].ToString() == "1")
+                {
+                    <form method="get" data-ajax="true" data-ajax-method="get"
+                          data-ajax-begin="MsgFormSpinner('A','افزودن مخاطب به گفتگو', 'چند لحظه صبر کنید');"
+                          data-ajax-url="?handler=FormAddMokhatab"
+                          data-ajax-update="#MsgForm_A_MATN">
+                        <input type="hidden" name="OWNER" value="@Model.RowData["Id_Owner"]" />
+                        <input type="hidden" name="HDID" value="@Model.RowData["Si"]" />
+                        <button type="submit" class="Btn btn_Normal btn_Blue w-fix-150">
+                            <span>افزودن مخاطب</span>
+                            <i class="icofont-2x icofont-plus"></i>
+                        </button>
+                    </form>
+                }
+            </div>
+
+            @if (Model.RowData["Active"].ToString() == "Y")
+            {
+                <div id="AreaReplyMsg" class="ReportSaz">
+                    <form asp-antiforgery="true" method="post" data-ajax="true" data-ajax-method="post"
+                          enctype="multipart/form-data"
+                          data-ajax-begin="SpinnerShow('MsgReplyList');"
+                          data-ajax-url="?handler=ReplyMsg"
+                          data-ajax-update="#MsgReplyList">
+                        <input type="hidden" name="HDID" value="@Model.RowData["Si"]" />
+                        <input class="d-none" type="file" id="ReplyFileUpload" name="FileUpload" accept=".jpg, .png, .bmp, .jpeg, .pdf, .txt, .xls, .xlsx, .doc, .docx, .zip, .rar" onchange="GetFile(this,'ReplyFileName', 'ReplyFileKnd');" />
+
+                        <div class="mb-2 text-start">
+                            <span class="control-label">شرح پیام</span>
+                            <textarea class="control-input-Area h-fix-200" id="MsgMatnRep" name="MsgMatn"></textarea>
+                        </div>
+                        <div class="d-flex justify-content-around">
+                            <button type="button" id="ReplyFileKnd" class="btn_Icon Icon_White icofont-3x icofont-upload" onclick="ClickBtnSimpl('ReplyFileUpload', '');" title="نوع فایل انتخاب شده"></button>
+                            <div class="flex-fill">
+                                <span class="control-label">پیوست</span>
+                                <div class="d-flex">
+                                    <span id="ReplyFileName" class="control-text mx-3"></span>
+                                    <button type="submit" id="ReplyMsgBtn" class="btn btn-success w-fix-150">ارسال <span class="icofont-2x icofont-paper-plane text-info float-end"></span></button>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            }
+        </div>
+
+
+        <div class="reportfilter d-flex p-2 Area_Pill">
+            @if (@ViewData["Order"].ToString() == "Asc"){
+                <button type="button" class="BTN btn_Pill btn_Green mx-1" onclick="ClickBtnSimpl('MsgDtListBtn', '', 'MsgDtOrder', 'Asc');"><span class="font-14">ترتیب اولین پیام</span><span class="btn_Icon icofont-00x icofont-arrow-up"></span></button>
+                <button type="button" class="BTN btn_Pill btn_Gray mx-1" onclick="ClickBtnSimpl('MsgDtListBtn', '', 'MsgDtOrder', 'Desc');"><span class="font-14">ترتیب آخرین پیام</span><span class="btn_Icon icofont-00x icofont-arrow-down"></span></button>
+            }
+            else{
+                <button type="button" class="BTN btn_Pill btn_Gray mx-1" onclick="ClickBtnSimpl('MsgDtListBtn', '', 'MsgDtOrder', 'Asc');"><span class="font-14">ترتیب اولین پیام</span><span class="btn_Icon icofont-00x icofont-arrow-up"></span></button>
+                <button type="button" class="BTN btn_Pill btn_Green mx-1" onclick="ClickBtnSimpl('MsgDtListBtn', '', 'MsgDtOrder', 'Desc');"><span class="font-14">ترتیب آخرین پیام</span><span class="btn_Icon icofont-00x icofont-arrow-down"></span></button>
+            }
+        </div>
+        
+        <div class="pt-4 container">
+            <div hidden>
+                <form asp-antiforgery="true" hidden method="post" data-ajax="true" data-ajax-method="post"
+                      data-ajax-confirm="آیا از حذف این مطلب مطمئن هستید"
+                      data-ajax-Btn="DeleteMsgDtBtn"
+                      data-ajax-begin="SpinnerShowForm('حذف مطلب', 'چند لحظه صبر کنید');"
+                      data-ajax-url="?handler=DeleteMsgDt"
+                      data-ajax-complete="SpinnerHideForm(); AreaHide('MsgDt_'+EleValue('DeleteMsgDtBtn'));">
+                    <button type="submit" hidden id="DeleteMsgDtBtn" name="ID" value="0">
+                    </button>
+                </form>
+
+                <form method="get" data-ajax="true" data-ajax-method="get"
+                      data-ajax-begin="MsgFormSpinner('A','ویرایش مطلب', 'چند لحظه صبر کنید');"
+                      data-ajax-url="?handler=FormUpdateMsg"
+                      data-ajax-update="#MsgForm_A_MATN">
+                    <input type="submit" hidden id="FormUpdateMsgBtn" name="ID" value="" />
+                </form>
+
+                <form method="get" data-ajax="true" data-ajax-method="get"
+                      data-ajax-begin="MsgFormSpinner('A','اشتراک گذاری مطلب', 'چند لحظه صبر کنید');"
+                      data-ajax-url="?handler=FormForwardMsg"
+                      data-ajax-update="#MsgForm_A_MATN">
+                    <input type="hidden" hidden id="FormForwardWriter" name="Writer" value="" />
+                    <input type="submit" hidden id="FormForwardMsgBtn" name="ID" value="" />
+                </form>
+
+            </div>
+
+            @foreach (DataRow item in Model.ListMsgDt.Rows)
+            {
+                RJ++; ZF = (ZF == "alert-success") ? "alert-secondary" : "alert-success";
+
+                <div class="alert pe-0 border-secondary @ZF" id="MsgDt_@item["Si"]">
+                    <div class="text-primary d-flex flex-wrap">
+                        <div class="border-bottom border-secondary">
+                            <img class="rounded rounded-5 w-fix-50 h-fix-50 mx-2" src="/Uploads/Persons/@item["PicWriter"]" />
+                            <span> @item["NameWriter"] :</span>
+                        </div>
+                        <div class="flex-fill text-end ltr">
+                            <span class="Area_Right bg_Firuze2">@RJ</span>
+                            <span class="text-secondary"> @item["MTime"]</span>
+                        </div>
+                    </div>
+
+
+                    <div class="p-2 text-start" id="MSG_@item["Si"]">@Html.Raw(HttpUtility.HtmlDecode(@item["Matn"].ToString()))</div>
+
+                    @if(@item["Id_Ref"].ToString() != "")
+                    {
+                        <div class="px-3 font-14">
+                            <div class="bg_Forward text-start">
+                                <span>@item["WriterRef"]  --> @item["MTimeRef"]</span>
+                                <div>
+                                    @Html.Raw(HttpUtility.HtmlDecode(@item["MatnRef"].ToString()))
+
+                                    @if (!@item["SecRef"].ToString().Contains("non"))
+                                    {
+                                        <span>
+                                            <a class="btn_Icon Icon_Mor icofont-00x mx-2 icofont-download-alt float-end" title="دانلود" target="_blank" href="/Uploads/MsgCenter/P_@item["Id_Ref"].ToString()_@item["SecRef"].ToString()">
+                                                دارای پیوست
+                                            </a>
+                                        </span>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                    }
+
+
+
+                    <div class="px-2 text-end border-top border-info border-opacity-50">
+                        @if (!@item["Sec"].ToString().Contains("non"))
+                        {
+                            <a class="btn_Icon Icon_Mor icofont-2x mx-2" title="دانلود" target="_blank" href="/Uploads/MsgCenter/P_@item["Si"].ToString()_@item["Sec"].ToString()">
+                                <span class="pt-2 text-danger">دارای پیوست</span><span class="font-18 icofont-download-alt"></span>
+                            </a>
+                            /* <button type="button" onclick="ShowFrame('پیوست','/Uploads/MsgCenter/P_@item["Si"].ToString()_@item["Sec"].ToString()')">5555555</button>*/
+                        }
+                        @if (@item["Id_User"].ToString() == ViewData["UserSi"].ToString() & @item["Active"].ToString() == "Y")
+                        {
+                            <button type="button" class="btn_Icon Icon_Blue2 mx-2 icofont-2x icofont-ui-edit" title="ویرایش پیام" onclick="ClickBtnSimpl('FormUpdateMsgBtn','@item["Si"]')"></button>
+                            <button type="button" class="btn_Icon Icon_Red mx-2 icofont-2x icofont-delete" title="حذف پیام" onclick="ClickBtnSimpl('DeleteMsgDtBtn','@item["Si"]')"></button>
+                        }
+                        <button type="button" class="btn_Icon Icon_Green mx-2 icofont-2x icofont-reply" title="اشتراک گذاری پیام" onclick="ClickBtnSimpl('FormForwardMsgBtn','@item["Si"]','FormForwardWriter','@item["Id_User"]')"></button>
+                    </div>
+                </div>
+            }
+        </div>
+        <script>
+            SetTiny('MsgMatnRep');
+        </script>
+        <form asp-antiforgery="true" method="post" data-ajax="true" data-ajax-method="post"
+              data-ajax-confirm="با خروج از گفتگو سابقه پیامهای شما حذف نمی شود. آیا میخواهیداز گفتگو خارج شوید"
+              data-ajax-Btn="DeletMokhatabBtn"
+              data-ajax-begin="SpinnerShowForm('ترک گفتگو', 'چند لحظه صبر کنید');"
+              data-ajax-url="?handler=DeletMokhatab"
+              data-ajax-complete="SpinnerHideForm(); AreaHide('FormAddMokhatabNow_'+EleValue('DeletMokhatabBtn')); AreaHide('ReplyListMokhatab_'+EleValue('DeletMokhatabBtn'));">
+            <input type="hidden" name="HDID" value="@ViewData["HDID"]" />
+            <input type="submit" hidden id="DeletMokhatabBtn" name="Mokhatab" value="0" />
+        </form>
+
+        break;
+
+
+
+    case "FormUpdateMsg":
+       <div class="secondAreaSection w-min-mediaForm">
+
+            <form asp-antiforgery="true" method="post" data-ajax="true" data-ajax-method="post"
+                  enctype="multipart/form-data"
+                  data-ajax-begin="SpinnerShow('UpdateMsgRes', 'چند لحظه صبر کنید');"
+                  data-ajax-url="?handler=UpdateMsg"
+                  data-ajax-update="#UpdateMsgRes"
+                  data-ajax-complete="SetHtml('MSG_@ViewData["ID"]', tinymce.get('MsgMatnUpdate').getContent())">
+
+                <input type="hidden" name="ID" value="@ViewData["ID"]" />
+                <input type="hidden" name="EXT" value="@Model.RowData["Sec"]" />
+                <input class="d-none" type="file" id="UpdateFileUpload" name="FileUpload" accept=".jpg, .png, .bmp, .jpeg, .pdf, .txt, .xls, .xlsx, .doc, .docx, .zip, .rar" onchange="GetFile(this,'UpdateFileName', 'UpdateFileKnd');" />
+
+                <div class="mb-2 text-start">
+                    <textarea class="control-input-Area h-fix-200" id="MsgMatnUpdate" name="MsgMatn">@Model.RowData["Matn"]</textarea>
+                </div>
+
+                <div id="UpdateMsgRes">
+                </div>
+
+                <div class="d-flex justify-content-around">
+                    <button type="button" id="UpdateFileKnd" class="btn_Icon Icon_MorLight icofont-3x icofont-upload" onclick="ClickBtn('UpdateFileUpload');" title="نوع فایل انتخاب شده"></button>
+                    <div class="flex-fill">
+                        <span class="control-label">پیوست</span>
+                        <div class="d-flex">
+                            <span id="UpdateFileName" class="control-text mx-3"></span>
+                            <button type="submit" id="UpdateMsgBtn" data-bs-toggle="tooltip" data-bs-title="ارسال " class="BTN btn_Normal btn_Brown w-fix-200"><span>ارسال  </span><i class="icofont-2x icofont-paper-plane"></i></button>
+                        </div>
+                    </div>
+                </div>
+            </form>
+
+        </div>
+       <script>
+            SetTiny('MsgMatnUpdate');
+        </script>
+
+        break;
+
+
+    case "FormForwardMsg":
+        <div class="secondArea">
+            <div id="AreaMatnForward">
+                <div class="bg_Forward text-start">
+                    <span>@Model.RowData["Writer"]  --> @Model.RowData["MTime"]</span>
+                    <div>
+                        @Html.Raw(HttpUtility.HtmlDecode(@Model.RowData["Matn"].ToString()))
+                    </div>
+                </div>
+            </div>
+            <form hidden method="post" data-ajax-method="post" data-ajax="true"
+                    data-ajax-begin="SelectWait('ForwardMsgHeader', 'چند لحظه صبر کنید');"
+                    data-ajax-url="?handler=FindMsgHeader"
+                    data-ajax-update="#ForwardMsgHeader">
+                    <input type="submit" id="FindMsgHeaderOnvan" name="Onvan" hidden value="" />
+                    <input type="hidden" id="FindMsgHeaderMember" name="Member" value=""/>
+            </form>
+           
+            
+            <form asp-antiforgery="true" method="post" data-ajax="true" data-ajax-method="post"
+                  data-ajax-begin="SpinnerShowForm('چند لحظه صبر کنید');"
+                  data-ajax-url="?handler=ForwardMsg"
+                  data-ajax-complete="ForwardMsgComp_3">
+                <input type="hidden" name="IDMatnForward" value="@ViewData["IdMatnForward"]" />
+                <input type="hidden" id="CtrlRoom" name="CTRLRoom" value="Exists" />
+                <input type="hidden" id="MokhatabanFWD" name="Mokhataban" value="0," />
+
+                <div class="d-flex justify-content-around flex-wrap">
+                    <button type="button" class="BTN btn_Pill btn_Blue2 w-fix-200 m-1" title="جستجوی اتاق گفتگو" onclick="AreaHide('AreaNewMsgForward'); AreaShow('AreaMsgHeader'); SetValueSimplMain('CtrlRoom','Exists');"><span>جستجوی موضوع گفتگو</span><span class="icofont-00x icofont-search-2 float-end"></span></button>
+                    <button type="button" class="BTN btn_Pill btn_Mor w-fix-200 m-1" title="ایجاد اتاق گفتگو جدید" onclick="AreaHide('AreaMsgHeader'); AreaShow('AreaNewMsgForward'); SetValueSimplMain('CtrlRoom','New');"><span>ایجاد موضوع جدید</span><span class="icofont-00x icofont-plus float-end"></span></button>
+                </div>
+                <hr />
+
+                <div class="py-2 dis-none" id="AreaNewMsgForward">
+                    <div class="d-flex">
+                        <button type="button" class="BTN btn_Pill btn_Brown icofont-2x icofont-search-user h-fix-50 m-1" data-bs-toggle="tooltip" data-bs-title="جستجوی مخاطب تک" onclick="ClickBtnSimpl('FormSearchMokhatabBtn','FWD','FormSearchMokhatabTAKGRP','TAK');"></button>
+                        <div id="ListMokhatabanFWD" class="d-flex flex-wrap">
+                        </div>
+                    </div>
+
+                    <span class="control-label">موضوع گفتگو را بنویسید</span>
+                    <input class="control-input" id="ForwardMsgOnvan" name="Onvan" placeholder="موضوع گفتگو را بنویسید" />
+                </div>
+
+
+
+
+                <div class="py-2" id="AreaMsgHeader">
+                    <div class="d-flex flex-wrap justify-content-center">
+                        <div class="w-min-300 p-2">
+                            <span class="control-label">نام مخاطب</span>
+                            <input class="control-input" id="RepMember" placeholder="قسمتی از نام مخاطب را بنویسید" />
+                        </div>
+                        <div class="w-min-300 p-2">
+                            <span class="control-label">موضوع گفتگو</span>
+                            <div class="d-flex">
+                                <input class="control-input" id="RepOnvan" placeholder="قسمتی از موضوع یا نام اتاق گفتگو را بنویسید" />
+                                <button type="button" class="btn_Icon icofont-2x icofont-search-2 Icon_Blue2" title="جستجوی اتاق گفتگو" onclick="ClickBtnValue('FindMsgHeaderOnvan','RepOnvan', 'FindMsgHeaderMember','RepMember');"></button>
+                            </div>
+                        </div>
+                    </div>
+                    <span class="control-label">موضوع گفتگو را انتخاب کنید</span>
+                    <select class="control-input" id="ForwardMsgHeader" name="IdMsgHeader">
+                        <option value="0">موضوع گفتگو را انتخاب کنید</option>
+                    </select>
+                </div>
+
+                <div class="mb-2 text-start">
+                    <textarea class="control-input-Area h-fix-100" id="MsgMatnForward" name="MsgMatn"></textarea>
+                </div>
+
+                <div id="ForwardMsgRes">
+                </div>
+
+                <div class="text-end px-2">
+                    <button type="submit" id="ForwardMsgBtn" class="btn btn-success w-fix-150" onclick="SetValueSimplMain('MatnForward',EleHtml('AreaMatnForward'))">
+                        ارسال <span class="icofont-2x icofont-paper-plane text-info float-end"></span>
+                    </button>
+                </div>
+            </form>
+
+        </div>
+        <script>
+            SetTiny('MsgMatnForward');
+
+            @* SetValueSimplMain('MatnForward',JSON.stringify(EleHtml('AreaMatnForward'))) *@
+        </script>
+
+        break;
+
+    case "ListMsgHd":
+        @foreach (DataRow item in Model.ListData.Rows)
+        {
+            <option value="@item["Si"]">@item["Mojri"] --> @item["Onvan"]</option>
+        }
+        break;
+
+
+    case "FormSearchMokhatab":
+        <section class="container secondArea">
+            <div class="reportfilter">
+                <form method="get" data-ajax-method="get" data-ajax="true"
+                      data-allow-enter="true"
+                      data-ajax-begin="SpinnerShow('Res_SearchGirande');"
+                      data-ajax-url="?handler=ListMokhatab"
+                      data-ajax-update="#Res_SearchGirande">
+                    <input type="hidden" name="TAKGRP" value="@ViewData["TAKGRP"]" />
+                    <input type="hidden" name="KND" value="@ViewData["KND"]" />
+                    <div class="d-flex gap-2">
+                        <div>
+                            <span class="control-label">گروه</span>
+                            <select class="control-input" name="GRP" onchange="ClickBtn('ListMokhatabBtn');">
+                                <option value="">همه</option>
+                                @foreach (DataRow item in Model.ListGroup.Rows)
+                                {
+                                    <option value="@item["Code"]">@item["Sharh"]</option>
+                                }
+                            </select>
+                        </div>
+                        <div class="flex-fill">
+                            <span class="control-label">نام</span>
+                            <input type="text" class="control-input text-center" name="FilterName" value="" />
+                        </div>
+                        <button type="submit" id="ListMokhatabBtn" class="btn_Icon Icon_Yellow icofont-2x icofont-search-user mt-3" title="محدوده اطلاعات"></button>
+                    </div>
+                </form>
+            </div>
+            <div id="Res_SearchGirande" class="w-max-600">
+                <div class="alert alert-info">
+                    <h5>
+                        قسمتی از نام مخاطب را بنویسید و جستجو را انجام بدهید
+                    </h5>
+                </div>
+            </div>
+        </section>
+
+        break;
+
+    case "FormAddMokhatab":
+        <section class="container secondArea">
+            <div id="FormAddMokhatabNow" class="reportfilter w-max-800">
+                <div class="d-flex flex-wrap justify-content-center">
+                    @foreach (DataRow item in Model.ListKarbaran.Rows)
+                    {
+                        if (@item["Si"].ToString() != ViewData["UserSi"].ToString())
+                        {
+                            <div id="FormAddMokhatabNow_@item["Si"]">
+                                <div class="areaKarbar cursor-pointer w-min-330">
+                                    <div class="PicKarbar colorSecondary">
+                                        <img src="/Uploads/Persons/@item["PicUser"]" class="rounded rounded-5 w-fix-50 h-fix-50" />
+                                    </div>
+                                    <div class="InfoKarbar">
+                                        <span class="control-label">
+                                            <span class="text-white-50">سمت: </span><span> </span>
+                                        </span>
+                                        <div class="colorSecondary text-start">
+                                            <span>@item["FullName"]</span>
+                                            <button type="button" class="btn_Icon btn_Pill Icon_Red icofont-00x icofont-delete float-end" title="حذف مخاطب" onclick="ClickBtnSimpl('DeletMokhatabAddBtn','@item["Si"]')"></button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    }
+                </div>
+            </div>
+            <form asp-antiforgery="true" method="post" data-ajax="true" data-ajax-method="post"
+                  data-ajax-confirm="با خروج از گفتگو سابقه پیامهای مخاطب حذف نمی شود. آیا مخاطب از گفتگو حذف شود"
+                  data-ajax-Btn="DeletMokhatabAddBtn"
+                  data-ajax-begin="SpinnerShowForm('حذف مخاطب', 'چند لحظه صبر کنید');"
+                  data-ajax-url="?handler=DeletMokhatab"
+                  data-ajax-complete="SpinnerHideForm(); AreaHide('FormAddMokhatabNow_'+EleValue('DeletMokhatabAddBtn')); AreaHide('ReplyListMokhatab_'+EleValue('DeletMokhatabAddBtn'));">
+                <input type="hidden" name="HDID" value="@ViewData["HDID"]" />
+                <input type="submit" hidden id="DeletMokhatabAddBtn" name="Mokhatab" value="0" />
+            </form>
+
+
+            <div class="secondArea">
+                <form method="get" data-ajax-method="get" data-ajax="true"
+                      data-ajax-begin="SpinnerShow('Res_SearchAddMokhatab');"
+                      data-ajax-url="?handler=ListMokhatab"
+                      data-ajax-update="#Res_SearchAddMokhatab">
+                    <input type="hidden" name="KND" value="@ViewData["KND"]" />
+                    <div class="d-flex">
+                        <div>
+                            <span class="control-label">گروه</span>
+                            <select class="control-input" name="GRP" onchange="ClickBtn('ListMokhatabBtn');">
+                                <option value="">همه</option>
+                                @foreach (DataRow item in Model.ListGroup.Rows)
+                                {
+                                    <option value="@item["Code"]">@item["Sharh"]</option>
+                                }
+                            </select>
+                        </div>
+                        <div class="flex-fill">
+                            <span class="control-label">نام</span>
+                            <input type="text" class="control-input text-center" name="FilterName" value="" />
+                        </div>
+                        <button type="submit" id="ListMokhatabBtn" class="btn_Icon Icon_MorLight icofont-2x icofont-search-user mt-3" title="محدوده اطلاعات"></button>
+                    </div>
+                </form>
+            </div>
+            <div id="Res_SearchAddMokhatab" class="w-max-600">
+                <div class="alert alert-info">
+                    <h5>
+                        قسمتی از نام مخاطب را بنویسید و جستجو را انجام بدهید
+                    </h5>
+
+                </div>
+            </div>
+
+            <form asp-antiforgery="true" method="post" data-ajax="true" data-ajax-method="post"
+                  data-ajax-begin="SpinnerShowForm('افزودن مخاطب', 'چند لحظه صبر کنید');"
+                  data-ajax-url="?handler=AddMokhatab"
+                  data-ajax-complete="SpinnerHideForm()">
+                <input type="hidden" name="HDID" value="@ViewData["HDID"]" />
+                <input type="submit" hidden id="AddMokhatabBtn" name="Mokhatab" value="0" />
+            </form>
+        </section>
+
+        break;
+
+    case "YadList":
+
+        <div class="d-flex flex-wrap justify-content-center">
+            @foreach (DataRow item in Model.ListData.Rows)
+            {
+                { RJ++; ZF = (ZF == "alert-success") ? "alert-secondary" : "alert-success"; }
+                <div class="card card-@ZF w-max-350 m-2">
+                    <span class="card-header card-header-best d-flex justify-content-between"><span>@item["DateYadavar"]</span><span>@item["TimeYadavar"]</span></span>
+                    <div class="card-body">
+                        <p class="text-start">
+                            <span class="spc-pre-wrap">@item["Matn"]</span>
+                        </p>
+                        <hr />
+                        <div class="d-flex">
+                            <span class="control-labelDark mt-1 mx-2">نمایش داده شود؟ </span>
+                            @if (@item["Act"].ToString() == "0")
+                            {
+                                <img class="w-fix-90 h-fix-30 cursor-pointer" src="/images/Btn_No.png" onclick="ToggelYesNo(this,'YesNoValu_@item["Si"]');ClickBtnSimpl('ChangActYadBtn', '@item["Si"]');" alt="Sarmad_YesNo">
+                                <input type="hidden" id="YesNoValu_@item["Si"]" value="N" />
+                            }
+                            else
+                            {
+                                <img class="w-fix-90 h-fix-30 cursor-pointer" src="/images/Btn_Yes.png" onclick="ToggelYesNo(this,'YesNoValu_@item["Si"]');ClickBtnSimpl('ChangActYadBtn', '@item["Si"]');" alt="Sarmad_YesNo">
+                                <input type="hidden" id="YesNoValu_@item["Si"]" value="Y" />
+                            }
+                        </div>
+                    </div>
+                    <div class="card-header card-header-best d-flex justify-content-between">
+                        <span class="text-info">@item["EditTime"]</span>
+                        <button type="button" class="btn_Icon Icon_Mor icofont-00x icofont-edit" title="ویرایش" onclick="ClickBtnSimpl('AreaYaddashtBtn', '', 'YaddashtUpdateBtn', '@item["Si"]', 'YadDate', '@item["DateYadavar"]', 'YadTime', '@item["TimeYadavar"]', 'YadMatn', '@item["Matn"]'); AreaShow('EditArea'); AreaHide('YadBtnNew');"></button>
+                        <button type="button" class="btn_Icon Icon_Red icofont-00x icofont-delete" title="حذف" onclick="ClickBtnSimpl('DeleteYadBtn', '@item["Si"]');"></button>
+
+                    </div>
+                </div>
+            }
+
+        </div>
+        <form hidden asp-antiforgery="true" method="post" data-ajax="true" data-ajax-method="post"
+              data-ajax-url="?handler=ChangActYad">
+            <input type="submit" hidden name="ID" value="0" id="ChangActYadBtn" />
+        </form>
+        <form hidden asp-antiforgery="true" method="post" data-ajax="true" data-ajax-method="post"
+              data-ajax-confirm="آیا از حذف این یادآور ممطئن هستید"
+              data-ajax-Btn="DeleteYadBtn"
+              data-ajax-url="?handler=YadDelete"
+              data-ajax-complete="ClickBtnSimpl('YaddashtReportBtn', '');">
+
+            <input type="submit" hidden name="ID" value="0" id="DeleteYadBtn" />
+        </form>
+
+        break;
+
+}

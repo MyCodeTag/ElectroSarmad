@@ -1,0 +1,30 @@
+﻿@{
+    Layout = null;   // چون می‌خوای فقط لاگ پرینت شه
+    var debugLog = ViewData["DebugLog"] as string ?? "⚠️ هیچ لاگی موجود نیست!";
+    var debugTitle = ViewData["DebugTitle"] as string ?? "📋 Debug Log";
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>@debugTitle</title>
+    <style>
+        body {
+            font-family: monospace;
+            background: #111;
+            color: #0f0;
+            padding: 20px;
+            white-space: pre-wrap;
+        }
+
+        h2 {
+            color: #ff5555;
+        }
+    </style>
+</head>
+<body>
+    <h2>@debugTitle</h2>
+    <div>@debugLog</div>
+</body>
+</html>

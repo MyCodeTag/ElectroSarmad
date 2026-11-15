@@ -1,0 +1,620 @@
+﻿@page
+@using System.Data;
+@model Sarmad.Pages.Dayli.MsgCenterModel
+@using Sarmad.Models
+@using System;
+@using System.Web;
+@using Sarmad.Services
+@{
+    DataRow pagesitem;
+    var RJ = 0;
+    var ZF = "";
+}
+
+<div>
+    <footer-page class="nav nav-tabs border-top border-light">
+        <div class="w-inline">
+            <div id="menu-page-btn">
+                <menu-page id="FastAlarm" class="dis-none" data-bs-toggle="tooltip" data-bs-title="گزارش پیام جدید" onclick="$('#waitbody').css('display', 'flex'); GoToUrl('/Dayli/MsgCenter');">
+                    <span class="text-danger icofont-00x icofont-bell-alt"></span>
+                    <span id="FastAlarmMsg">10 تا پیام جدید داری</span>
+                </menu-page>
+                <menu-page class="w-min-50" data-bs-toggle="tooltip" data-bs-title="منو" onclick="MenuToggel();">
+                    <span class="menu-firuze icofont-00x icofont-listine-dots icofont-rotate-180"></span>
+                </menu-page><point></point>
+                <menu-page class="active" data-bs-toggle="tab" data-bs-target="#tab_A">پیامهای جدید</menu-page><point></point>
+                <menu-page data-bs-toggle="tab" data-bs-target="#tab_C">نوشتن پیام جدید</menu-page><point></point>
+                <menu-page data-bs-toggle="tab" data-bs-target="#tab_D">گزارش</menu-page><point></point>
+                <menu-page data-bs-toggle="tab" data-bs-target="#tab_E" id="btntabReply">گفتگوها</menu-page><point></point>
+                <menu-page data-bs-toggle="tab" data-bs-target="#tab_F">یادداشت ها</menu-page><point></point>
+                <menu-page class="w-min-50" onclick="HelpAjax(@Model.FormId);" data-bs-toggle="tooltip" data-bs-title="راهنما"><span class="menu-firuze icofont-00x icofont-learn"></span></menu-page>
+                <menu-page class="w-min-50" onclick="ToggleFullscreen();" data-bs-toggle="tooltip" data-bs-title="تمام صفحه"><span class="menu-firuze icofont-00x icofont-expand"></span></menu-page>
+                <menu-page onclick="GoToTop();" class="w-min-50" data-bs-toggle="tooltip" data-bs-title="برگشت به بالا" data-toggle="tooltip"><span class="menu-firuze icofont-00x icofont-stylish-up"></span></menu-page>
+                <menu-page class="bg-secondary" data-bs-toggle="tooltip" data-bs-title="برگشت به صفحه قبل" data-toggle="tooltip">
+                    <select class="text-start bg-secondary text-light" onchange="GoToUrl(this.value);">
+                        @foreach (DataRow item in Model.formData.lastForms.Rows)
+                        {
+                            <option value="/@item["NameForm"]">@item["Onvan"]</option>
+                        }
+                    </select>
+                </menu-page><point></point>
+                <button type="button" class="pos-Right btn_Icon Icon_Red icofont-2x icofont-curved-double-right d-md-none" data-bs-toggle="tooltip" data-bs-title="اسکرول به راست" onclick="ScrollRight('menu-page-btn');"></button>
+                <button type="button" class="pos-Left btn_Icon Icon_Red icofont-2x icofont-curved-double-left d-md-none" data-bs-toggle="tooltip" data-bs-title="اسکرول به چپ" onclick="ScrollLeft('menu-page-btn');"></button>
+            </div>
+        </div>
+    </footer-page>
+
+    <div class="tab-content">
+        <div class="tab-pane fade active show" id="tab_A">
+            @{
+                pagesitem = Model.formData.Pages.Select("RJ = 1").First();
+            }
+            <div class="OnvanSafhe">
+                <h6 class="shadow">@pagesitem["OnvanPage"]</h6>
+            </div>
+            @if (@pagesitem["HeaderPage"].ToString() != "")
+            {
+                <div class="alert alert-secondary">
+                    @Html.Raw(HttpUtility.HtmlDecode(@pagesitem["HeaderPage"].ToString()))
+                </div>
+            }
+            
+            <div class="mt-4 d-flex flex-wrap" id="AreaBtnPinNew">
+                <button type="button" class="BTN btn_Pill btn_UnSelected w-min-250 m-2 btn_Selected" onclick="Btn_Select(this, 'AreaBtnPinNew'); ActiveArea('AreaDetail', 'Detail_New');">لیست پیامهای جدید</button>
+                <button type="button" class="BTN btn_Pill btn_UnSelected w-min-250 m-2" onclick="Btn_Select(this, 'AreaBtnPinNew'); ActiveArea('AreaDetail', 'Detail_Pin');">لیست پیامهای پین شده</button>
+            </div>
+
+            <div id="AreaDetail">
+                <div id="Detail_New" class="AreaDetail dis-block">
+                    @if (Model.ListNewMsg.Rows.Count != 0)
+                    {
+                        <div class="d-flex flex-wrap justify-content-between border-top border-secondary">
+                            <div class="Area_Count w-fix-250">
+                                <span>تعداد پیامهای جدید : </span><span>@Model.ListNewMsg.Rows.Count </span>
+                            </div>
+                            <div class="Area_Count flex-fill">
+                                <span>برای عدم مشاهده اعلامیه پیام جدید، روی زنگوله<span class="btn_Icon Icon_Orang icofont-2x icofont-alarm"></span> پیام جدید کلیک کنید تا خاموش شود </span>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            @foreach (DataRow item in Model.ListNewMsg.Rows)
+                            {
+                                RJ++; ZF = (ZF == "alert-success") ? "alert-secondary" : "alert-success";
+                                        <div class="col-12 col-sm-6 col-md-4 col-lg-3 col-xlg-2  py-2">
+                                            <div class="alert @ZF" id="NewMsgRow_@item["Si"]">
+                                        <div class="Area_Normal bg_Gray d-flex">
+                                            <span class="flex-fill spc-pre-wrap font-18">@item["Onvan"]</span>
+                                            <div>
+                                                @if (@item["Knd"].ToString() == "P")
+                                                {
+                                                    <span class="icofont icofont-00x icofont-user-alt-2 text-warning"></span>
+                                                }
+                                                else
+                                                {
+                                                    @if (@item["Knd"].ToString() == "G")
+                                                    {
+                                                        <span class="icofont icofont-00x icofont-users-alt-2 text-warning"></span>
+                                                    }
+                                                    else
+                                                    {
+                                                        <span class="icofont icofont-00x icofont-automation text-warning"></span>
+                                                    }
+                                                }
+
+                                            </div>
+                                        </div>
+
+                                        <div class="card-body d-flex flex-column justify-content-between h-82">
+                                            <div>
+                                                <div class="text-primary d-flex">
+                                                    <div class="border-bottom border-secondary border-opacity-50 d-flex">
+                                                        <img class="rounded rounded-5 w-fix-50 h-fix-50" src="/Uploads/Persons/@item["PicWriter"]" />
+                                                        <div class="ps-2 pt-3">
+                                                            <span> @item["NameWriter"] :</span>
+                                                        </div>
+                                                    </div>
+                                                    <div class="flex-fill text-end">
+                                                    </div>
+                                                </div>
+                                                <div class="pt-1 text-start">@Html.Raw(HttpUtility.HtmlDecode(@item["Matn"].ToString()))</div>
+                                            </div>
+
+                                            <div class="font-14 mt-3">
+                                                <div class="d-flex justify-content-between border-top border-2 border-secondary border-opacity-50">
+                                                    <button type="button" class="btn_Icon Icon_Orang icofont-2x icofont-alarm" data-bs-toggle="tooltip" data-bs-title="جدید" onclick="ClickBtnSimpl('MsgReadBtn', '@item["Si"]'); ChangIcon(this, 'Icon_Orang', 'Icon_Gray');"></button>
+
+                                                    <span class="mt-4 ltr">@item["TimeWrite"]</span>
+
+                                                    <button type="button" class="btn_Icon Icon_Mor icofont-2x icofont-list" data-bs-toggle="tooltip" data-bs-title="نمایش" onclick="ClickBtnSimpl('MsgDtListBtn', '@item["Id_Hd"]', 'MsgDtOrder', 'Desc');"></button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="alert alert-primary font-18">پیام جدید ندارید</div>
+                    }
+                </div>
+  
+                <div id="Detail_Pin" class="AreaDetail">
+                    @if (Model.ListPinMsg.Rows.Count != 0)
+                    {
+                        <div class="d-flex flex-wrap justify-content-between border-top border-secondary">
+                            <div class="Area_Count w-fix-350">
+                                <span>تعداد پیامهای پین شده : </span><span>@Model.ListPinMsg.Rows.Count </span>
+                            </div>
+                        </div>
+                        <div class="row">
+                            @foreach (DataRow item in Model.ListPinMsg.Rows)
+                            {
+                                RJ++; ZF = (ZF == "alert-success") ? "alert-secondary" : "alert-success";
+                                <div class="col-12 col-sm-6 col-md-4 col-lg-3 col-xlg-2  py-2">
+                                    <div class="alert @ZF">
+                                        <div class="Area_Normal bg_Gray d-flex">
+                                            <span class="flex-fill spc-pre-wrap font-18">@item["Onvan"]</span>
+                                            <div>
+                                                @if (@item["Knd"].ToString() == "P")
+                                                {
+                                                    <span class="icofont icofont-00x icofont-user-alt-2 text-warning"></span>
+                                                }
+                                                else
+                                                {
+                                                    @if (@item["Knd"].ToString() == "G")
+                                                    {
+                                                        <span class="icofont icofont-00x icofont-users-alt-2 text-warning"></span>
+                                                    }
+                                                    else
+                                                    {
+                                                        <span class="icofont icofont-00x icofont-automation text-warning"></span>
+                                                    }
+                                                }
+
+                                            </div>
+                                        </div>
+
+                                        <div class="card-body d-flex flex-column justify-content-between h-82">
+                                            <div>
+                                                <div class="text-primary d-flex  justify-content-between">
+                                                    <div class="border-bottom border-secondary border-opacity-50 d-flex">
+                                                        <img class="rounded rounded-5 w-fix-50 h-fix-50" src="/Uploads/Persons/@item["PicWriter"]" />
+                                                        <div class="ps-2 pt-3">
+                                                            <span> @item["NameWriter"] :</span>
+                                                        </div>
+                                                    </div>
+                                                    <div class="flex-fill text-end">
+                                                        <select class="w-fix-50 form-control text-center Area_Right bg_Gray cursor-pointer" onchange="ClickBtnSimplValue('UpdateSortPinBtn','@item["Id_Pin"]','UpdateSortPinSort',this)">
+                                                            <option value="@item["Sort"]">@item["Sort"]</option>
+                                                            @for (var sort = 1; sort < 100; sort++)
+                                                            {
+                                                                <option value="@sort">@sort</option>
+                                                            }
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                                <div class="pt-1 text-start">@Html.Raw(HttpUtility.HtmlDecode(@item["Matn"].ToString()))</div>
+                                            </div>
+
+                                            <div class="font-14 mt-3">
+                                                <div class="d-flex justify-content-between border-top border-2 border-secondary border-opacity-50">
+
+                                                    <span class="mt-4 ltr">@item["TimeWrite"]</span>
+
+                                                    <button type="button" class="btn_Icon Icon_Mor icofont-2x icofont-list" data-bs-toggle="tooltip" data-bs-title="نمایش" onclick="ClickBtnSimpl('MsgDtListBtn', '@item["Id_Hd"]', 'MsgDtOrder', 'Desc');"></button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="alert alert-primary font-18">هنوز پیامی برای در دسترس بودن پین نکرده اید</div>
+                        <div class="alert alert-secondary">
+                            پیامهای مهمی که میخواهید پیگیری کنید و دم دستتون باشد را پین کنید
+                            برای اینکار گزارش بگیرید
+                            و سپس روی آیکون پین<span class="btn_Icon Icon_Orang icofont-2x icofont-tack-pin"></span>  کلیک کنید
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+
+        <div class="tab-pane fade" id="tab_C">
+            @{
+                pagesitem = Model.formData.Pages.Select("RJ = 2").First();
+            }
+            <div class="OnvanSafhe">
+                <h6 class="shadow">@pagesitem["OnvanPage"]</h6>
+            </div>
+            @if (@pagesitem["HeaderPage"].ToString() != "")
+            {
+                <div class="alert alert-secondary">
+                    @Html.Raw(HttpUtility.HtmlDecode(@pagesitem["HeaderPage"].ToString()))
+                </div>
+            }
+            <div class="filterArea px-2 py-3">
+                <form asp-antiforgery="true" method="post" data-ajax="true" data-ajax-method="post"
+                      enctype="multipart/form-data"
+                      data-ajax-begin="SpinnerShow('NewMsgRes', 'در حال آماده ارسال پیام');"
+                      data-ajax-url="?handler=NewMsg"
+                      data-ajax-update="#NewMsgRes"
+                      data-ajax-complete="NewMsgComplete_48">
+                    <input class="d-none" type="file" id="FileUpload" name="FileUpload" accept=".jpg, .png, .bmp, .jpeg, .pdf, .txt, .xls, .xlsx, .doc, .docx, .zip, .rar" onchange="GetFile(this,'FileName', 'FileKnd');" />
+                    <input type="hidden" id="NewMsgKndChat" name="ChatRoom" value="Room" />
+                    <input type="hidden" id="MokhatabanSND" name="Mokhataban" value="0," />
+
+                    <div class="d-flex justify-content-between">
+                        <div>
+                            <button type="button" class="BTN btn_Pill btn_Brown icofont-2x icofont-search-user h-fix-50 m-1" data-bs-toggle="tooltip" data-bs-title="جستجوی مخاطب تک" onclick="ClickBtnSimpl('FormSearchMokhatabBtn','SND','FormSearchMokhatabTAKGRP','TAK');"></button>
+                            <button type="button" class="BTN btn_Pill btn_Brown icofont-2x icofont-users-alt-2 h-fix-50 m-1" data-bs-toggle="tooltip" data-bs-title="جستجوی مخاطب گروهی" onclick="ClickBtnSimpl('FormSearchMokhatabBtn','SND','FormSearchMokhatabTAKGRP','GRP');"></button>
+                        </div>
+                        <button id="BtnClrearMokhatab" type="button" class="BTN btn_Pill btn_Gray icofont-2x icofont-eraser h-fix-50 m-1" data-bs-toggle="tooltip" data-bs-title="پاک کردن مخاطبین انتخاب شده" onclick="SetValueSimplMain('MokhatabanSND','0,'); AreaClear('ListMokhatabanSND');"></button>
+                    </div>
+                    <div id="ListMokhatabanSND" class="d-flex flex-wrap">
+                    </div>
+
+                    <div class="text-start pt-2">
+                        <div id="AreaBtnMsgKnd">
+                            <button type="button" class="BTN btn_Pill btn_Blue w-fix-200 btn_UnSelected m-1 btn_SelectedFlat" data-bs-toggle="tooltip" data-bs-title="ایجاد موضوع اختصاصی" onclick="SetValueSimplMain('NewMsgKndChat','Room');AreaShow('AreaMsgOnvan'); Btn_SelectFlat(this, 'AreaBtnMsgKnd'); "><span>ایجاد پرونده جدید</span><i class="text-brown icofont icofont-00x icofont-folder-open"></i></button>
+                            <button type="button" hidden class="BTN btn_Pill btn_Blue2 w-fix-200 btn_UnSelected m-1" data-bs-toggle="tooltip" data-bs-title="گفتگوی آزاد" onclick="SetValueSimplMain('NewMsgKndChat','Chat');AreaHide('AreaMsgOnvan'); Btn_SelectFlat(this, 'AreaBtnMsgKnd'); "><span>گفتگوی آزاد</span><i class="text-brown icofont icofont-00x icofont-comment"></i></button>
+                        </div>
+                        <div class="pb-2 text-start" id="AreaMsgOnvan">
+                            <span class="control-label">موضوع گفتگو <span class="mx-1 font-13 text-warning">(اگر پیام در ارتباط یا ادامه پیامی دیگری است، گفتگوی جدید را شروع نکنید و پیام را با پاسخ به پیام قبلی ارسال کنید)</span></span>
+                            <input type="text" class="control-input" name="MsgOnvan" value="" />
+                        </div>
+                    </div>
+                    <div class="py-2 text-start">
+                        <span class="control-label">شرح پیام</span>
+                        <textarea class="control-input-Area h-fix-200" id="MsgMatn" name="MsgMatn"></textarea>
+                    </div>
+
+                    <div id="NewMsgRes"></div>
+
+                    <div class="d-flex justify-content-around">
+                        <button type="button" id="FileKnd" class="btn_Icon Icon_White icofont-3x icofont-upload" onclick="ClickBtnSimpl('FileUpload', '');" data-bs-toggle="tooltip" data-bs-title="فایل پیوست را انتخاب کنید"></button>
+                        <div class="flex-fill">
+                            <span class="control-label">پیوست</span>
+                            <div class="d-flex">
+                                <span id="FileName" class="control-text mx-3">ندارد</span>
+                                <button type="submit" id="NewMsgBtn" class="BTN btn_Normal btn_Green w-fix-150" data-bs-toggle="tooltip" data-bs-title="پیام ارسال شود"><span>ارسال </span><i class="icofont-2x icofont-paper-plane text-info"></i></button>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+
+        <div class="tab-pane fade" id="tab_D">
+            @{
+                pagesitem = Model.formData.Pages.Select("RJ = 3").First();
+            }
+            <div class="OnvanSafhe">
+                <h6 class="shadow">@pagesitem["OnvanPage"]</h6>
+            </div>
+            @if (@pagesitem["HeaderPage"].ToString() != "")
+            {
+                <div class="alert alert-secondary">
+                    @Html.Raw(HttpUtility.HtmlDecode(@pagesitem["HeaderPage"].ToString()))
+                </div>
+            }
+
+            <div class="filterArea p-2 w-max-800 mx-auto">
+                <form asp-antiforgery="true" method="post" data-ajax="true" data-ajax-method="post"
+                      data-ajax-begin="SpinnerShow('MsgReports', 'در حال آماده سازی گزارش');"
+                      data-ajax-url="?handler=MsgReports"
+                      data-ajax-update="#MsgReports">
+                    <input type="hidden" id="MokhatabanREP" name="MOKHATAB" value="0," />
+
+                    <div class="d-flex justify-content-between">
+                        <div>
+                            <button type="button" class="BTN btn_Pill btn_Brown icofont-2x icofont-search-user h-fix-50 m-1" data-bs-toggle="tooltip" data-bs-title="جستجوی مخاطب تک" onclick="ClickBtnSimpl('FormSearchMokhatabBtn','REP','FormSearchMokhatabTAKGRP','TAK');"></button>
+                            <button type="button" class="BTN btn_Pill btn_Brown icofont-2x icofont-users-alt-2 h-fix-50 m-1" data-bs-toggle="tooltip" data-bs-title="جستجوی مخاطب گروهی" onclick="ClickBtnSimpl('FormSearchMokhatabBtn','REP','FormSearchMokhatabTAKGRP','GRP');"></button>
+                        </div>
+                        <div>
+                            <button type="button" class="BTN btn_Pill btn_Gray icofont-2x icofont-cubes h-fix-50 m-1" data-bs-toggle="tooltip" data-bs-title="محدوده گذاری دقیق تر" onclick="AreaToggel('AreaFilter');"></button>
+                            <button type="button" class="BTN btn_Pill btn_Gray icofont-2x icofont-eraser h-fix-50 m-1" data-bs-toggle="tooltip" data-bs-title="پاک کردن مخاطبین انتخاب شده" onclick="SetValueSimplMain('MokhatabanREP','0,'); AreaClear('ListMokhatabanREP');"></button>
+                        </div>
+                    </div>
+                    <div id="ListMokhatabanREP" class="d-flex flex-wrap">
+                    </div>
+
+                    <div id="AreaFilter" class="ReportSaz">
+                        <div class="mt-3 d-flex flex-wrap justify-content-around">
+                            <div class="mb-2 w-fix-125 mx-1">
+                                <span class="control-label">نوع</span>
+                                <select class="control-input " name="KND">
+                                    <option value="Z">همه</option>
+                                    <option value="F">آزاد</option>
+                                    <option value="P">موضوعی شخصی</option>
+                                    <option value="G">موضوعی گروهی</option>
+                                    <option value="S">سیستمی</option>
+                                </select>
+                            </div>
+                            <div class="mb-2 w-fix-125 mx-1">
+                                <span class="control-label">مشاهده</span>
+                                <select class="control-input " name="NEW">
+                                    <option value="Z">همه</option>
+                                    <option value="Y">جدید</option>
+                                    <option value="N">خوانده شده</option>
+                                </select>
+                            </div>
+                            <div class="mb-2 w-fix-125 mx-1">
+                                <span class="control-label">صندوق</span>
+                                <select class="control-input" name="WRITER">
+                                    <option value="Z" selected>همه</option>
+                                    <option value="Y">ارسالی</option>
+                                    <option value="N">دریافتی</option>
+                                </select>
+                            </div>
+                            <div class="mb-2 w-fix-125 mx-1">
+                                <span class="control-label">مجری</span>
+                                <select class="control-input" name="OWNER">
+                                    <option value="Z">همه</option>
+                                    <option value="Y">خودم</option>
+                                    <option value="N">سایرین</option>
+                                </select>
+                            </div>
+                            <div class="mb-2 w-fix-125 mx-1">
+                                <span class="control-label">وضعیت</span>
+                                <select class="control-input" name="ACTIVE">
+                                    <option value="Z">همه</option>
+                                    <option value="Y" selected>فعال</option>
+                                    <option value="N">بسته شده</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-12 col-sm-6">
+                                <span class="control-label">موضوع گفتگو</span>
+                                <input type="text" name="ONVAN" class="control-input" placeholder="قسمتی از موضوع را بنویسید">
+                            </div>
+                            <div class="col-12 col-sm-6">
+                                <span class="control-label">شرح گفتگو</span>
+                                <input type="text" name="MATN" class="control-input" placeholder="قسمتی از متن پیام را بنویسید">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="d-flex flex-wrap justify-content-around py-3" id="MsgReportsBtnArea">
+                        <button type="button" onclick="Btn_SelectFlat(this, 'MsgReportsBtnArea'); ClickBtnSimpl('MsgReportsBtn','Pin');" class="BTN btn_Pill btn_UnSelected w-fix-200 m-2">پین شده ها<span class="icofont-00x icofont-tack-pin float-end"></span></button>
+                        <button type="button" onclick="Btn_SelectFlat(this, 'MsgReportsBtnArea'); ClickBtnSimpl('MsgReportsBtn','Topic');" class="BTN btn_Pill btn_UnSelected w-fix-250 m-2">موضوعات و اتاقهای گفتگو<span class="icofont-00x icofont-search-2 float-end"></span></button>
+                        <button type="button" onclick="Btn_SelectFlat(this, 'MsgReportsBtnArea'); ClickBtnSimpl('MsgReportsBtn','Detail');" class="BTN btn_Pill btn_UnSelected w-fix-200 m-2">گزارش گفتگوها<span class="icofont-00x icofont-search-2 float-end"></span></button>
+                        <input type="submit" id="MsgReportsBtn" hidden name="KndReport" value="Pin" />
+                    </div>
+
+                    <div class="d-flx justify-content-around p-2" id="">
+                    </div>
+                </form>
+            </div>
+            <div id="MsgReports">
+                <div class="alert alert-primary">
+                    با شرایط گذاری مناسب و انتخاب مخاطب لیست پیامها و موضوعاتی که درباره آنها صحبت کرده اید را پیدا کنید 
+                </div>
+            </div>
+        </div>
+
+
+        <div class="tab-pane fade" id="tab_E">
+            @{
+                pagesitem = Model.formData.Pages.Select("RJ = 4").First();
+            }
+            <div class="OnvanSafhe">
+                <h6 class="shadow">@pagesitem["OnvanPage"]</h6>
+            </div>
+            @if (@pagesitem["HeaderPage"].ToString() != "")
+            {
+                <div class="alert alert-secondary">
+                    @Html.Raw(HttpUtility.HtmlDecode(@pagesitem["HeaderPage"].ToString()))
+                </div>
+            }
+            <div class="">
+                <div id="MsgReplyList">
+                    <div class="alert alert-secondary">
+                        ابتدا گزارش بگیرید و یک موضوع را انتخاب کنید تا همه گفتگوها در مورد آن موضوع را مشاهده کنید
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+
+        <div class="tab-pane fade" id="tab_F">
+            @{
+                pagesitem = Model.formData.Pages.Select("RJ = 5").First();
+            }
+            <div class="OnvanSafhe">
+                <h6 class="shadow">@pagesitem["OnvanPage"]</h6>
+            </div>
+            @if (@pagesitem["HeaderPage"].ToString() != "")
+            {
+                <div class="alert alert-secondary">
+                    @Html.Raw(HttpUtility.HtmlDecode(@pagesitem["HeaderPage"].ToString()))
+                </div>
+            }
+            <div class=" w-max-800 mx-auto ">
+                <div class="dis-none" id="AreaYaddashtUpdate">
+                    <div class="d-flex Area_Top btn_Gray">
+                        <div class="flex-fill">
+                            <h5>ایجاد و ویرایش یادداشت</h5>
+                        </div>
+                        <span class="btn btn-outline-light" onclick="AreaHide('AreaYaddashtUpdate');AreaShow('AreaYaddashtReport');"><span class="icofont-00x icofont-plus"></span>گزارش </span>
+                    </div>
+                    <div class="filterArea">
+                        <form asp-antiforgery="true" method="post" data-ajax="true" data-ajax-method="post"
+                              data-ajax-confirm="آیا یادداشت ذخیره شود؟"
+                              data-ajax-Btn="YaddashtUpdateBtn"
+                              data-ajax-begin="SpinnerShowBtn('YaddashtRes');"
+                              data-ajax-url="?handler=YaddashtUpdate"
+                              data-ajax-update="#YaddashtRes"
+                              data-ajax-complete="SetValueSimpl('YadMatn', '');">
+                            <input type="submit" class="d-none" id="YaddashtUpdateBtn" name="ID" value="0" />
+                            <input type="hidden" name="Act" value="1" />
+                            <div class="d-flex justify-content-around">
+                                <div class="w-fix-125">
+                                    <span class="control-label">انتخاب سریع</span>
+                                    <select class="control-input flex-fill" onchange="ClickBtnValue('NewTimeBtn',this);">
+                                        <option value="">انتخاب کنید</option>
+                                        <option value="A">یکساعت دیگر</option>
+                                        <option value="B">چهارساعت دیگر</option>
+                                        <option value="C">هشت ساعت دیگر</option>
+                                        <option value="D">فردا</option>
+                                        <option value="E">سه روز دیگر</option>
+                                        <option value="F">هفته دیگر</option>
+                                        <option value="G">دو هفته بعد</option>
+                                        <option value="H">ماه آینده</option>
+                                        <option value="I">سه ماه دیگر</option>
+                                        <option value="J">شش ماه دیگر</option>
+                                        <option value="K">سال آینده</option>
+                                    </select>
+                                </div>
+                                <div class="w-fix-125">
+                                    <span class="control-label">تاریخ یادآور</span>
+                                    <div class="control-Date">
+                                        <input id="YadDate" name="Date" maxlength="10" class="usage control-input-plaintext" value="@Model.formData.Today" />
+                                    </div>
+                                </div>
+                                <div class="w-fix-125">
+                                    <span class="control-label">ساعت</span>
+                                    <input id="YadTime" class="control-input" name="Time" type="time" />
+                                </div>
+                            </div>
+
+                            <div class="mb-2 text-start">
+                                <span class="control-label"> متن یادداشت</span>
+                                <textarea class="control-input-Area h-fix-200" id="YadMatn" name="Matn"></textarea>
+                            </div>
+                            <div class="p-2 text-end">
+                                <button type="button" id="YadBtnNew" class="btn_Icon Icon_Yellow icofont-2x icofont-checked" data-bs-toggle="tooltip" data-bs-title="ثبت شود" onclick="ClickBtnSimpl('YaddashtUpdateBtn', '0');"><span>ثبت شود</span></button>
+                                <div id="EditArea" class="dis-none">
+                                    <button type="button" id="BtnEdit" class="btn_Icon Icon_White icofont-00x icofont-edit" data-bs-toggle="tooltip" data-bs-title="ویرایش شود" onclick="ClickBtnSimpl('YaddashtUpdateBtn', ''); AreaHide('EditArea'); AreaShow('YadBtnNew');"><span>ویرایش شود</span></button>
+                                    <button type="button" id="BtnCancel" class="btn_Icon Icon_Orang icofont-00x icofont-close-squared-alt" data-bs-toggle="tooltip" data-bs-title="انصراف" onclick="AreaHide('EditArea'); AreaShow('YadBtnNew'); SetValueSimplMain('YadMatn', '');"><span>انصراف</span></button>
+                                </div>
+                            </div>
+                        </form>
+                        <div id="YaddashtRes">
+                            <div class="alert alert-primary">
+                                یک یادداشت برای خود ایجاد کنید تا در زمان مشخص شده به شما یادآوری شود
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div id="AreaYaddashtReport">
+                <div class=" w-max-800 mx-auto ">
+                    <div class="d-flex Area_Top btn_Gray">
+                        <span class="btn btn-outline-light" id="AreaYaddashtBtn" onclick="AreaHide('AreaYaddashtReport');AreaShow('AreaYaddashtUpdate');"><span class="icofont-00x icofont-plus"></span>جدید </span>
+                        <div class="flex-fill">
+                            <h5>گزارش</h5>
+                        </div>
+                    </div>
+                    <div class="filterArea">
+                        <form asp-antiforgery="true" method="post" data-ajax="true" data-ajax-method="post"
+                              data-ajax-begin="SpinnerShowBtn('YaddashtRep');"
+                              data-ajax-url="?handler=YaddashtReport"
+                              data-ajax-update="#YaddashtRep">
+                            <input type="submit" class="d-none" id="YaddashtReportBtn" value="0" />
+                            <div class="d-flex flex-wrap justify-content-around">
+                                <div class="w-fix-125">
+                                    <span class="control-label">از تاریخ یادآور</span>
+                                    <div class="control-Date">
+                                        <input name="FromDate" maxlength="10" class="usage control-input-plaintext" value="@ViewData["ThisYear"]/01/01" />
+                                    </div>
+                                </div>
+                                <div class="w-fix-125">
+                                    <span class="control-label">تا تاریخ یادآور</span>
+                                    <div class="control-Date">
+                                        <input name="ToDate" maxlength="10" class="usage control-input-plaintext" value="@ViewData["ThisYear"]/12/30" />
+                                    </div>
+                                </div>
+                                <div class="w-fix-150">
+                                    <span class="control-label">متن</span>
+                                    <input name="Matn" class="control-input text-center" value="" />
+                                </div>
+                                <div class="w-fix-100">
+                                    <span class="control-label">وضعیت</span>
+                                    <select name="Act" class="control-input text-center">
+                                        <option value="">همه</option>
+                                        <option value="1">فعال</option>
+                                        <option value="0">غیر فعال</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="p-2 text-end">
+                                <button type="button" class="btn_Icon Icon_White icofont-2x icofont-look" data-bs-toggle="tooltip" data-bs-title="نمایش" onclick="ClickBtnSimpl('YaddashtReportBtn', '');"><span>گزارش یادآورها</span></button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                <div id="YaddashtRep">
+                    <div class="alert alert-primary">
+                        گزارشی از یادداشت ها و یادآورها بگیرید تا بتونید آنها را غیر فعال کنید و یا زمان یادآوری آن را تغییر بدهید
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div hidden>
+    <form hidden asp-antiforgery="true" method="post" data-ajax="true" data-ajax-method="post"
+          data-ajax-begin=" ClickBtn('btntabReply'); SpinnerShow('MsgReplyList', 'در حال بارگذاری پیامها');"
+          data-ajax-url="?handler=MsgDtList"
+          data-ajax-update="#MsgReplyList">
+        <input type="hidden" name="Order" value="Desc" id="MsgDtOrder" />
+        <input type="submit" hidden name="HDID" value="0" id="MsgDtListBtn" />
+    </form>
+
+    <form hidden asp-antiforgery="true" method="post" data-ajax="true" data-ajax-method="post"
+          data-ajax-begin="SelectWait('Karbar', 'چند لحظه صبر کنید');"
+          data-ajax-url="?handler=Karbaran"
+          data-ajax-update="#Karbar">
+        <input type="submit" hidden name="FILTER" value="" id="KarbarBtn" />
+    </form>
+
+
+    <form hidden asp-antiforgery="true" method="post" data-ajax="true" data-ajax-method="post"
+          data-ajax-url="?handler=MsgRead">
+        <input type="submit" hidden name="Id" value="0" id="MsgReadBtn" />
+    </form>
+
+
+    <form hidden asp-antiforgery="true" method="get" data-ajax="true" data-ajax-method="get"
+          data-ajax-url="?handler=NewTime"
+          data-ajax-complete="SetDateTimeYaddasht_48">
+        <input type="submit" hidden name="SEC" value="A" id="NewTimeBtn" />
+    </form>
+
+
+    <form method="get" data-ajax="true" data-ajax-method="get"
+          data-ajax-begin="MsgFormSpinner('B','جستجوی مخاطب', 'چند لحظه صبر کنید');"
+          data-ajax-url="?handler=FormSearchMokhatab"
+          data-ajax-update="#MsgForm_B_MATN">
+        <input type="hidden" id="FormSearchMokhatabTAKGRP" name="TAKGRP" value="" />
+        <input type="submit" hidden id="FormSearchMokhatabBtn" name="KND" value="" />
+    </form>
+    <form method="post" data-ajax="true" data-ajax-method="post"
+          data-ajax-url="?handler=UpdateSortPin">
+        <input type="hidden" id="UpdateSortPinSort" name="Sort" value="10" />
+        <input type="submit" hidden id="UpdateSortPinBtn" name="Id" value="0" />
+    </form>
+
+
+    <script>
+        window.onload = function () {
+            SetTiny('MsgMatn');
+        }
+    </script>
+
+</div>
+
+

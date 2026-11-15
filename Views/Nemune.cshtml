@@ -1,0 +1,281 @@
+﻿
+
+<div class="text-end p-3">
+    <button type="submit" id="BtnReport_A" data-bs-toggle="tooltip" data-bs-title="گزارش" onclick="AreaUp('ReportSaz');" class="BTN btn_Pill btn_Blue2 w-min-200"><span>نمایش گزارش </span><i class="icofont-2x icofont-search-2"></i></button>
+</div>
+
+<div class="text-end p-3">
+    <button type="submit" data-bs-toggle="tooltip" data-bs-title="ثبت شود" class="BTN btn_Normal btn_Brown w-fix-200"><span>ثبت شود </span><i class="icofont-2x icofont-checked"></i></button>
+</div>
+
+
+    مجموعه ناحیه انتخاب تاریخ
+<div class="">
+    <div class="w-max-180 mx-auto">
+        <span class="control-label">محدوده تاریخ</span>
+        <select class="control-input" id="S_LimitDate" onchange="LimitDateAjax(this,'');">
+            <option value="0" selected>انتخاب شود</option>
+            <option value="TD">امروز</option>
+            <option value="1W">یک هفته</option>
+            <option value="2W">دو هفته</option>
+            <option value="1M">یک ماه</option>
+            <option value="TM">ماه جاری</option>
+            <option value="LM">ماه قبل</option>
+            <option value="3M">سه ماه</option>
+            <option value="6M">شش ماه</option>
+            <option value="1Y">یکسال</option>
+            <option value="TY">امسال</option>
+            <option value="LY">پارسال</option>
+        </select>
+        <div id="waitLimitDate"></div>
+
+        <span class="control-label">از تاریخ</span>
+        <div class="control-Date">
+            <input id="FromDate" name="FromDate" class="usage control-input-plaintext" value="@ViewData["Today"]" />
+        </div>
+        <span class="control-label">تا تاریخ</span>
+        <div class="control-Date">
+            <input id="ToDate" name="ToDate" class="usage control-input-plaintext" value="@ViewData["Today"]" />
+        </div>
+    </div>
+</div>
+<table class="table mb-0">
+    <thead>
+        <tr>
+        </tr>
+    </thead>
+</table>
+
+
+<button type="button" class="btn_IconFix Icon_Yellow icofont-00x icofont-search" data-bs-toggle="tooltip" data-bs-title="جستجوی" onclick="AreaHide('');AreaShow('');"></button>
+
+<button type="button" class="btn_Icon Icon_Mor icofont-00x icofont-bubble-left" data-bs-toggle="tooltip" data-bs-title="نمایش" onclick=""></button>
+<button type="button" class="btn_Icon Icon_Mor icofont-00x icofont-look" data-bs-toggle="tooltip" data-bs-title="نمایش" onclick=""></button>
+<button type="button" class="btn_Icon Icon_Red icofont-00x icofont-reply" data-bs-toggle="tooltip" data-bs-title="برگشت" onclick=""></button>
+<button type="button" class="btn_Icon Icon_Red icofont-00x icofont-delete" data-bs-toggle="tooltip" data-bs-title="حذف" onclick=""></button>
+<button type="button" class="btn_Icon Icon_MorLight icofont-00x icofont-edit" data-bs-toggle="tooltip" data-bs-title="ویرایش" onclick=""></button>
+<button type="button" class="btn_Icon Icon_Red icofont-00x icofont-close" data-bs-toggle="tooltip" data-bs-title="انصراف" onclick=""></button>
+<button type="button" class="btn_Icon Icon_Dark icofont-00x icofont-sign-in" data-bs-toggle="tooltip" data-bs-title="ورود به سیستم مشتری" onclick=""></button>
+برای مواردی که باید چند کالا جمع شود تا بعد تائید شود
+<button type="button" class="btn_Icon Icon_Green icofont-00x" icofont-00x icofont-basket" data-bs-toggle="tooltip" data-bs-title="به سبد اضافه شود" onclick=""></button>
+همانند سبد برای حمع آوری یکسری اطلاعات
+<button type="button" class="btn_Icon Icon_Blue2 icofont-00x icofont-plus" data-bs-toggle="tooltip" data-bs-title="اضافه شود" onclick=""></button>
+برای تائید یک برگه یا ثبت یک اطلاعات چدید
+<button type="button" class="btn_Icon Icon_Blue2 icofont-00x icofont-checked" data-bs-toggle="tooltip" data-bs-title="ثبت شود" onclick=""></button>
+<button type="button" class="btn_Icon Icon_Orang icofont-00x icofont-filter" data-bs-toggle="tooltip" data-bs-title="محدوده اطلاعات" onclick=""></button>
+
+<button type="button" class="btn_Icon Icon_Brown icofont-00x icofont-binoculars" data-bs-toggle="tooltip" data-bs-title="پیگیری" onclick=""><icon class=""></icon></button>
+
+<button type="button" class="btn_Icon Icon_Blue2 icofont-00x icofont-toggle-on" data-bs-toggle="tooltip" data-bs-title="کنترل ثبت" onclick="ClickBtnValueSimpl('GardeshBtn', 'HesabId', 'GardeshTF', 'M');"></button>
+<button type="button" class="btn_Icon Icon_Firuze2 icofont-00x icofont-recycle" data-bs-toggle="tooltip" data-bs-title="بررسی مانده حساب" onclick="ClickBtnValueSimpl('MandehBtn', 'HesabId', 'MandehTF', 'M');"></button>
+}
+
+
+ساخت منوکشویی برای انتخاب چند گزینه برای گزارش گیری
+<div class="p-1">
+    <span class="control-label">عنوان</span>
+    <div class="control-input d-flex justify-content-between">
+        <label for="C_All"><input type="checkbox" id="C_All" checked onclick="CheckAllOnvan_31()" /> همه</label>
+        <label for="C_Tan"><input type="checkbox" id="C_Tan" onclick="SelectOnvan_31('178');" /> تنخواه</label>
+
+        <button type="button" id="iconOnvan" class="icofont-00x icofont-circled-down" onclick="AreaToggel('OnvanList'); ChangIcon('iconOnvan', 'icofont-circled-down', 'icofont-circled-up');"></button>
+        <input type="hidden" id="Onvan" name="IdDP" value=",@foreach (var H in Model.IdValueTp_List){@if (@H.Reg == "HAZ" || @H.Reg == "DAR"){ @if (@H.Id != "178"){@H.Tp}}}" />
+    </div>
+    <div id="OnvanList" class="checkboxes text-start">
+        @foreach (var H in Model.IdValueTp_List)
+        {
+            @if (@H.Reg == "HAZ" || @H.Reg == "DAR")
+            {
+                @if (@H.Id != "178")
+                {
+                    <label for="C_@H.Id"><input type="checkbox" id="C_@H.Id" checked onclick="SelectOnvan_31('@H.Id');" /> @H.Value</label>
+                }
+            }
+        }
+    </div>
+</div>
+
+
+
+
+<div class="w-max-1200 mx-auto">
+
+    <div class="overflow-auto" id="RRRRR_MS" onscroll="ScrollSlave(this, 'RRRRR_FT');">
+        <table class="table">
+        </table>
+    </div>
+    <div class="header_Table">
+        <button type="button" class="btn_Icon footer_Right Icon_Red icofont-00x icofont-curved-double-right" data-bs-toggle="tooltip" data-bs-title="اسکرول به راست" onclick="ScrollRight('RRRRR_FT');"></button>
+        <button type="button" class="btn_Icon footer_Left Icon_Red icofont-00x icofont-curved-double-left" data-bs-toggle="tooltip" data-bs-title="اسکرول به چپ" onclick="ScrollLeft('RRRRR_FT');"></button>
+        <div id="RRRRR_FT" class="overflow-hidden" onscroll="ScrollSlave(this, 'RRRRR_MS');">
+            <table class="table mb-0">
+                <thead>
+                    <tr>
+                    </tr>
+                </thead>
+            </table>
+        </div>
+    </div>
+</div>
+
+
+        public async Task<IActionResult>
+    OnPostChap_RepHd(string ComText = "", string Chap = "0", string OnvanChap = "")
+    {
+    try
+    {
+                string FileName = Center.FilePath(_hostingEnvironment.WebRootPath, VU, Request.Cookies["User.Sarmad.ir"], Chap);
+
+    var ListPrint = await DBS.GetReportDataAsync(ComText);
+
+    OnvanChap = (Center.TrimTxt(OnvanChap) == "") ? "گزارش خریدها" : OnvanChap;
+
+    if (Chap == "CHAP" || Chap == "PDF")
+    {
+
+    // code in your main method
+    Document.Create(container =>
+    {
+    container.Page(page =>
+    {
+    page.Size(PageSizes.A4);
+    page.Margin(1, Unit.Centimetre);
+    page.PageColor(Colors.White);
+    page.DefaultTextStyle(x => x.FontSize(10));
+    page.ContentFromRightToLeft();
+
+    static IContainer DefaultCellStyle(IContainer container, string backgroundColor = "")
+    {
+    return container
+    .Border(1)
+    .BorderColor(Colors.Grey.Lighten1)
+    .Background(!string.IsNullOrEmpty(backgroundColor) ? backgroundColor : Colors.White)
+    .PaddingVertical(7)
+    .PaddingHorizontal(3);
+    }
+    var RJ = 0;
+
+    page.Header()
+    .Text(OnvanChap)
+    .SemiBold().FontSize(14).FontColor(Colors.Blue.Medium);
+
+    page.Content()
+    .PaddingVertical(1, Unit.Centimetre)
+    .Border(1)
+    .Table(table =>
+    {
+    table.ColumnsDefinition(columns =>
+    {
+    columns.RelativeColumn(1);
+    columns.RelativeColumn(5);
+    columns.RelativeColumn(4);
+    columns.RelativeColumn(6);
+    columns.RelativeColumn(8);
+    columns.RelativeColumn(12);
+    });
+    table.Header(header =>
+    {
+    header.Cell().Element(CellStyle).AlignCenter().Text("#").FontSize(11).SemiBold();
+    header.Cell().Element(CellStyle).Text("تاریخ").FontSize(11).SemiBold();
+    header.Cell().Element(CellStyle).Text("شماره").FontSize(11).SemiBold();
+    header.Cell().Element(CellStyle).Text("حجم کالا").FontSize(11).SemiBold();
+    header.Cell().Element(CellStyle).Text("مبلغ برگه").FontSize(11).SemiBold();
+    header.Cell().Element(CellStyle).Text("توضیح").FontSize(11).SemiBold();
+
+
+    // you can extend existing styles by creating additional methods
+    IContainer CellStyle(IContainer container) => DefaultCellStyle(container, Colors.Grey.Lighten3);
+    });
+
+    foreach (DataRow item in ListPrint.Rows)
+    {
+    RJ++;
+    table.Cell().Element(CellStyle).Text(RJ.ToString()).FontSize(11);
+    table.Cell().Element(CellStyle).Text(item["DDateKharid"].ToString()).FontSize(11);
+    table.Cell().Element(CellStyle).Text(item["Num"].ToString()).FontSize(11);
+    table.Cell().Element(CellStyle).Text(item["SumNq"].ToString().ToComma()).FontSize(11);
+    table.Cell().Element(CellStyle).Text(item["SumPrice"].ToString().ToComma()).FontSize(11);
+    table.Cell().Element(CellStyle).Text(item["Tp"].ToString()).FontSize(11);
+    }
+
+    IContainer CellStyle(IContainer container) => DefaultCellStyle(container).ShowOnce();
+    });
+
+
+    page.Footer()
+    .AlignCenter()
+    .Text(x =>
+    {
+    x.Span("صفحه");
+    x.CurrentPageNumber();
+    });
+    });
+    })
+    .GeneratePdf(FileName);
+
+    }
+    if (Chap == "XLS")
+    {
+
+    string sheetName = " گزارش لیست خریدها";
+    // فایلی از نوع xlsx
+    IWorkbook workbook = new XSSFWorkbook();
+    //ایجاد شیت در فایل اکسل
+    ISheet sheet = workbook.CreateSheet(sheetName);
+    sheet.IsRightToLeft = true;
+    // ایجاد عنصر سطر
+    IRow row = sheet.CreateRow(1);
+
+    IFont font = workbook.CreateFont();
+    font.IsBold = true;
+    font.FontHeightInPoints = 14;
+    ICellStyle boldStyle = workbook.CreateCellStyle();
+    boldStyle.SetFont(font);
+
+    int _Row = 1;
+    sheet.AddMergedRegion(new CellRangeAddress(_Row, _Row + 1, 1, 10));
+    row = sheet.CreateRow(_Row);
+    Center.CellAddData(row, 1, OnvanChap, CellType.String); ;
+
+    _Row += 3;
+    row = sheet.CreateRow(_Row);
+    Center.CellAddData(row, 1, "تاریخ", CellType.String);
+    Center.CellAddData(row, 2, "شماره", CellType.String);
+    Center.CellAddData(row, 3, "مقدار کل", CellType.String);
+    Center.CellAddData(row, 4, "مبلغ کل", CellType.String);
+    Center.CellAddData(row, 5, "شرح", CellType.String);
+
+
+    foreach (DataRow item in ListPrint.Rows)
+    {
+    _Row += 1;
+    row = sheet.CreateRow(_Row);
+    // پرکردن سلولها
+    Center.CellAddData(row, 1, item["DDateKharid"].ToString(), CellType.String);
+    Center.CellAddData(row, 2, item["Num"].ToString(), CellType.String);
+    Center.CellAddData(row, 3, item["SumNq"].ToString(), CellType.Numeric);
+    Center.CellAddData(row, 4, item["SumPrice"].ToString(), CellType.String);
+    Center.CellAddData(row, 5, item["Tp"].ToString(), CellType.Numeric);
+
+    // سایزبندی 20 ستون در شیت
+    for (int i = 0; i <= 20; i++) sheet.AutoSizeColumn(i, true);
+
+    using (FileStream stream = new FileStream(FileName, FileMode.Create, FileAccess.Write, FileShare.None))
+    {
+    workbook.Write(stream);
+    }
+
+    }
+
+    }
+    }
+    catch (Exception ex)
+    {
+    Center.ChapEmpty(_hostingEnvironment.WebRootPath, VU, Request.Cookies["User.Sarmad.ir"], Chap);
+
+    await DBS.LogErrorSaveCmdAsync(ComText, Center.GetUserId(Request.Cookies["User.Sarmad.ir"]), FormId, MethodBase.GetCurrentMethod().Name, ex.Message);
+    }
+    return Content("OK");
+    }
+
+

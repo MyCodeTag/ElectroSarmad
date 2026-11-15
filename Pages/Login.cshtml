@@ -1,0 +1,109 @@
+﻿@page 
+@model LoginModel
+@{
+    Layout = null;
+}
+  
+<head>
+    <title>سرمد</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <environment include="Development">
+        <link href="~/lib/bootstrap/dist/css/bootstrap.rtl.css" rel="stylesheet" />
+        <link href="~/fonts/icofont/icofont.css" rel="stylesheet" />
+    </environment>
+    <environment exclude="Development">
+        <link href="~/lib/bootstrap/dist/css/bootstrap.rtl.min.css" rel="stylesheet" />
+        <link href="~/fonts/icofont/icofont.min.css" rel="stylesheet" />
+    </environment>
+
+    <link href="~/css/styles.css" rel="stylesheet" />
+</head>
+
+<body class="text-start">
+
+    <div style="direction:rtl" class="">
+        <hr />
+        <div class="mt-5 text-center">
+            <img src="~/images/SARMAD.svg" class="w-max-350 mx-auto" />
+            <br />
+            <div class="w-max-350 mx-auto border text-white rounded border-info p-5 LoginForm">
+                <form asp-antiforgery="true" method="post" data-ajax-method="post" data-ajax="true"
+                      data-allow-enter="true"
+                      data-ajax-begin="SpinnerShow('RES','در حال تائید هویت. چند لحظه صبر کنید ...');"
+                      data-ajax-url="?handler=Login"
+                      data-ajax-complete="LoginComp">
+                    <div class="text-center">
+                        <h4 class="flex-fill text-center" style="font-family: DastNevis; color:orangered">سامانه ERP </h4>
+                        <h4 class="text-center" style="font-family: DastNevis;">(سرمد)</h4>
+                    </div>
+                    <hr class="bg-warning" />
+                    <div class="mb-2 ">
+                        <span class="control-label text-warning">نام کاربری</span>
+                        <input type="text" name="UserName" class="control-input text-center ltr font-20" value="@ViewData["UserName"]" />
+                    </div>
+                    <div class="mb-2 ">
+                        <span class="control-label text-warning">رمز ورود به سیستم</span>
+                        <input type="password" name="Password" class="control-input text-center ltr" value="" />
+                    </div>
+                    <div class="mt-4">
+                        <button type="submit" class="BTN btn_Normal btn_Blue "><div class="d-flex gap-2"><h5> ورود به</h5> <h4 class="font-24" style="font-family: DastNevis; color:darkred">سرمد</h4></div> </button>
+                    </div>
+                    <hr />
+                    <div class="text-end">
+                        <button type="button" class="btn_Icon Icon_Yellow icofont-00x icofont-flag" onclick="ClickBtn('HelpBtn');" title="راهنما"></button>
+                    </div>
+                    <div class="text-warning text-center h-max-100" id="RES"></div>
+                    <input type="hidden" name="_Page" value="@ViewData["_Page"]" />
+                </form>
+            </div>
+        </div>
+        <div id="HelpArea" class="text-center">
+        </div>
+
+    </div>
+    <!-- پنجره پیامها -->
+    <div class="overlap-5">
+        <div class="modal dis-none" id="MsgAreaModal">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content back-op-0-75 p-4 border border-3 border-primary rounded-5">
+                    <div class="alert alert-primary border border-2 border-danger">
+                        <div class="text-start">
+                            <h6 class="text-primary" id="ShowMsg_TITR">Heading</h6>
+                            <hr />
+                            <div class="text-center" id="ShowMsg_MATN">
+                                Msg body..
+                            </div>
+                            <hr />
+                            <div class="text-end px-2">
+                                <button type="button" class="btn_Icon Icon_Brown icofont-00x icofont-thumbs-up" onclick="AreaUp('MsgAreaModal'); AreaClear('ShowMsg_MATN');"></button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- راهنما -->
+    <form hidden method="get" data-ajax-method="get" data-ajax="true"
+          data-ajax-begin="SpinnerShow('HelpArea');"
+          data-ajax-url="../ApiCenter?handler=HelpShow"
+          data-ajax-update="#HelpArea">
+        <input hidden type="submit" id="HelpBtn" name="ID" value="36" />
+
+    </form>
+
+    <environment include="Development">
+        <script src="~/lib/jquery/dist/jquery.js"></script>
+        <script src="~/lib/bootstrap/dist/js/bootstrap.js"></script>
+    </environment>
+    <environment exclude="Development">
+        <script src="~/lib/jquery/dist/jquery.min.js"></script>
+        <script src="~/lib/bootstrap/dist/js/bootstrap.min.js"></script>
+    </environment>
+
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    <script src="~/js/Ajax.js"></script>
+</body>
