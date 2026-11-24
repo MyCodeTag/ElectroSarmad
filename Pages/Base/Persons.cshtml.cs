@@ -371,7 +371,7 @@ namespace Sarmad.Pages.Base
         }
 
         public async Task<IActionResult> OnGetFormFindPerson()
-        {// فرم ثبت دیتای کاربر
+        {// فرم پیدا کردن کاربر
             try
             {
                 ViewData["Switch"] = "FormFindPerson";

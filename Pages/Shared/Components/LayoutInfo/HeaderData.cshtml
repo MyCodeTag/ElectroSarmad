@@ -1,9 +1,9 @@
 ﻿@model Sarmad.Models.LayoutDataModel
 
-<header class="text-white px-2">
+<header class="app-header text-white px-2">
     <div class="d-flex justify-content-between pt-3">
         <div class="d-flex">
-            <button type="button" class="btn_Icon Icon_Blue3 icofont-2x icofont-listine-dots icofont-rotate-180" data-bs-toggle="tooltip" data-bs-title="منو" onclick="MenuToggel();"></button>
+            <button type="button" id="menu-Main-btn" class="btn_Icon Icon_Blue3 icofont-2x icofont-listine-dots icofont-rotate-180 pr_260" data-bs-toggle="tooltip" data-bs-title="منو" onclick="MenuToggel();"></button>
             @if (Model.listNewMsg.Rows.Count != 0)
             {
                 <span onmouseenter="Rotate(this,'Z');" onclick="$('#waitbody').css('display', 'flex'); GoToUrl('/Dayli/MsgCenter');" class="ms-2 mt-3 cursor-pointer">

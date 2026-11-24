@@ -20,6 +20,7 @@ namespace Sarmad.Pages.Base
         public required DataTable ListData { get; set; }
         public required DataTable ListForms { get; set; }
         public required DataTable ListCategoris { get; set; }
+        public required DataTable ListOlgus { get; set; }
         public required DataTable ListUnits { get; set; }
         public required DataRow RowData { get; set; }
 
@@ -215,7 +216,7 @@ namespace Sarmad.Pages.Base
 
         }
 
-        public async Task<IActionResult> OnGetFormSabtBox(string ID)
+        public async Task<IActionResult> OnGetFormSabtBox(string ID, string Vahed)
         {// فرم بسته بندی های یک کالا
             try
             {
@@ -227,7 +228,7 @@ namespace Sarmad.Pages.Base
                 };
                 ProcName = "dbo.ProductUnits_List";
                 ListUnits = await DBS.GetReportAsync(ProcName, Params);
-
+                ViewData["Vahed"] = Vahed;
 
                 ViewData["Switch"] = "FormSabtBox";
             }
@@ -329,6 +330,366 @@ namespace Sarmad.Pages.Base
                 ViewData = this.ViewData
             };
         }
+
+
+
+
+
+
+        public async Task<IActionResult> OnGetFormSabtBOM(string OlguID)
+        {// فرم ایجاد و یرایش الگو 
+            try
+            {
+                ViewData["OlguID"] = OlguID;
+
+                if (OlguID != "0")
+                {
+                    Params = new Dictionary<string, object>
+                    {
+                        { "@Si" , OlguID }
+                    };
+                    ProcName = "dbo.ProductStructure_Info";
+                    RowData = await DBS.GetReportRowAsync(ProcName, Params);
+                }
+
+
+                ViewData["Switch"] = "FormSabtBOM";
+            }
+            catch (Exception ex)
+            {
+                ViewData["ERRComm"] = await DBS.LogErrorSaveAsync(ProcName, Params, Center.GetUserId(Request.Cookies["User.Sarmad.ir"]), FormId, MethodBase.GetCurrentMethod().Name, ex.Message);
+                ViewData["ERRRes"] = ex.Message;
+                ViewData["Switch"] = "Error"; VU = "_CommonView";
+            }
+
+            return new PartialViewResult
+            {
+                ViewName = VU,
+                ViewData = this.ViewData
+            };
+        }
+        public async Task<IActionResult> OnGetFormFindMahsul()
+        {// فرم پیدا کردن محصول
+            ViewData["Switch"] = "FormFindMahsul";
+
+            return new PartialViewResult
+            {
+                ViewName = VU,
+                ViewData = this.ViewData
+            };
+        }
+        public async Task<IActionResult> OnGetFindMahsul(string Filter)
+        {// لیست محصولات فیلتر شده
+            try
+            {
+                Params = new Dictionary<string, object>
+                {
+                    { "@Category", 0 },
+                    { "@Prod", Filter },
+                };
+                ProcName = "dbo.Products_ListSearch";
+
+                ListProducts = await DBS.GetReportAsync(ProcName, Params);
+                if (ListProducts.Rows.Count == 0)
+                {
+                    ViewData["Switch"] = "MSG";
+                    ViewData["MSG"] = "کالایی با مشخصات فوق پیدا نشد. شرایط جستجو را تغییر بدهید و دوباره گزارش بگیرید";
+
+                    return new PartialViewResult
+                    {
+                        ViewName = "_CommonView",
+                        ViewData = this.ViewData
+                    };
+                }
+                ;
+
+                ViewData["Switch"] = "ListMahsulFiltered";
+
+            }
+            catch (Exception ex)
+            {
+                ViewData["ERRComm"] = await DBS.LogErrorSaveAsync(ProcName, Params, Center.GetUserId(Request.Cookies["User.Sarmad.ir"]), FormId, MethodBase.GetCurrentMethod().Name, ex.Message);
+                ViewData["ERRRes"] = ex.Message;
+                ViewData["Switch"] = "Error"; VU = "_CommonView";
+            }
+
+            return new PartialViewResult
+            {
+                ViewName = VU,
+                ViewData = this.ViewData
+            };
+
+        }
+        public async Task<IActionResult> OnPostUpdateBom(string ID, string ProdId, string OnvanOlgu, string Act, string MainOlgu)
+        {// ثبت یک الگوی ساخت
+            try
+            {
+                if (!await DBS.CheckToken(HttpContext, userInfo))
+                    return RedirectToPage("/LoginFast");
+
+                Params = new Dictionary<string, object>
+                {
+                    { "@Si_Editor" , userInfo.Si },
+                    { "@ID" , ID },
+                    { "@ProductId" , ProdId },
+                    { "@OnvanOlgu" , OnvanOlgu },
+                    { "@Act" , Act },
+                    { "@MainOlgu" , MainOlgu },
+                };
+                ProcName = "dbo.ProductStructure_Update";
+                var UpdateRes = await DBS.GetReportRowAsync(ProcName, Params);
+
+                return new JsonResult(UpdateRes.ToJsonObject());
+
+            }
+            catch (Exception ex)
+            {
+                ViewData["ERRComm"] = await DBS.LogErrorSaveAsync(ProcName, Params, Center.GetUserId(Request.Cookies["User.Sarmad.ir"]), FormId, MethodBase.GetCurrentMethod().Name, ex.Message);
+                ViewData["ERRRes"] = ex.Message;
+                ViewData["Switch"] = "Error"; VU = "_CommonView";
+            }
+
+            return new PartialViewResult
+            {
+                ViewName = VU,
+                ViewData = this.ViewData
+            };
+        }
+        public async Task<IActionResult> OnGetListBOM(string Prod, string Olgu, string Sort)
+        {// لیست الگوهای تولید
+            try
+            {
+                Params = new Dictionary<string, object>
+                {
+                    { "@Product", Prod },
+                    { "@Olgu", Olgu },
+                    { "@Sort", Sort },
+                };
+                ProcName = "dbo.ProductStructure_List";
+
+                ListOlgus = await DBS.GetReportAsync(ProcName, Params);
+                if (ListOlgus.Rows.Count == 0)
+                {
+                    ViewData["Switch"] = "MSG";
+                    ViewData["MSG"] = "الگوی تولید با مشخصات فوق پیدا نشد. شرایط جستجو را تغییر بدهید و دوباره گزارش بگیرید";
+
+                    return new PartialViewResult
+                    {
+                        ViewName = "_CommonView",
+                        ViewData = this.ViewData
+                    };
+                }
+                ;
+
+                ViewData["Switch"] = "ListBOM";
+
+            }
+            catch (Exception ex)
+            {
+                ViewData["ERRComm"] = await DBS.LogErrorSaveAsync(ProcName, Params, Center.GetUserId(Request.Cookies["User.Sarmad.ir"]), FormId, MethodBase.GetCurrentMethod().Name, ex.Message);
+                ViewData["ERRRes"] = ex.Message;
+                ViewData["Switch"] = "Error"; VU = "_CommonView";
+            }
+
+            return new PartialViewResult
+            {
+                ViewName = VU,
+                ViewData = this.ViewData
+            };
+
+        }
+        public async Task<IActionResult> OnPostDeleteBOM(string ID)
+        {// حذف یک مواد اولیه
+            try
+            {
+                if (!await DBS.CheckToken(HttpContext, userInfo))
+                    return RedirectToPage("/LoginFast");
+
+                Params = new Dictionary<string, object>
+                {
+                    { "@Si_Editor" , userInfo.Si },
+                    { "@ID" , ID },
+                };
+                ProcName = "dbo.ProductStructure_Delete";
+                var DeletRes = await DBS.GetReportRowAsync(ProcName, Params);
+                //await DBS.TestProcedure(ProcName, Params);
+                return Content(DeletRes["message"].ToString());
+
+            }
+            catch (Exception ex)
+            {
+                ViewData["ERRComm"] = await DBS.LogErrorSaveAsync(ProcName, Params, Center.GetUserId(Request.Cookies["User.Sarmad.ir"]), FormId, MethodBase.GetCurrentMethod().Name, ex.Message);
+                ViewData["ERRRes"] = ex.Message;
+                ViewData["Switch"] = "Error"; VU = "_CommonView";
+            }
+
+            return new PartialViewResult
+            {
+                ViewName = VU,
+                ViewData = this.ViewData
+            };
+        }
+
+
+
+
+        public async Task<IActionResult> OnGetFormMavadBOM(string OlguID)
+        {// فرم مواد در یک الگو 
+            try
+            {
+                ViewData["OlguID"] = OlguID;
+
+                if (OlguID != "0")
+                {
+                    Params = new Dictionary<string, object>
+                    {
+                        { "@Si" , OlguID }
+                    };
+                    ProcName = "dbo.ProductStructure_Info";
+                    RowData = await DBS.GetReportRowAsync(ProcName, Params);
+
+                    Params = new Dictionary<string, object>
+                    {
+                        { "@OlguId" , OlguID }
+                    };
+                    ProcName = "dbo.ProductStructureDetail_List";
+                    ListProducts = await DBS.GetReportAsync(ProcName, Params);
+                }
+
+
+                ViewData["Switch"] = "FormMavadBOM";
+            }
+            catch (Exception ex)
+            {
+                ViewData["ERRComm"] = await DBS.LogErrorSaveAsync(ProcName, Params, Center.GetUserId(Request.Cookies["User.Sarmad.ir"]), FormId, MethodBase.GetCurrentMethod().Name, ex.Message);
+                ViewData["ERRRes"] = ex.Message;
+                ViewData["Switch"] = "Error"; VU = "_CommonView";
+            }
+
+            return new PartialViewResult
+            {
+                ViewName = VU,
+                ViewData = this.ViewData
+            };
+        }
+        public async Task<IActionResult> OnPostSabtMavadBOM(string OlguID, string MavadID, string Quantity)
+        {// ثبت یک مواد اولیه به نیم محصول یا محصول
+            try
+            {
+                if (!await DBS.CheckToken(HttpContext, userInfo))
+                    return RedirectToPage("/LoginFast");
+
+
+                Params = new Dictionary<string, object>
+                {
+                    { "@Si_Editor" , userInfo.Si },
+                    { "@OlguId" , OlguID },
+                    { "@MavadId" , MavadID },
+                    { "@Quantity" , Quantity },
+                };
+                ProcName = "dbo.ProductStructureDetail_Add";
+                var AddRes = await DBS.GetReportRowAsync(ProcName, Params);
+                if (AddRes["success"].ToString().ToUpper() == "OK")
+                {
+                    Params = new Dictionary<string, object>
+                    {
+                        { "@OlguId" , OlguID }
+                    };
+                    ProcName = "dbo.ProductStructureDetail_List";
+                    ListProducts = await DBS.GetReportAsync(ProcName, Params);
+                    ViewData["Switch"] = "ListMavadBOM";
+                }
+                else
+                {
+                    ViewData["Switch"] = "MSG";
+                    ViewData["MSG"] = AddRes["message"].ToString();
+
+                    return new PartialViewResult
+                    {
+                        ViewName = "_CommonView",
+                        ViewData = this.ViewData
+                    };
+                }
+
+            }
+            catch (Exception ex)
+            {
+                ViewData["ERRComm"] = await DBS.LogErrorSaveAsync(ProcName, Params, Center.GetUserId(Request.Cookies["User.Sarmad.ir"]), FormId, MethodBase.GetCurrentMethod().Name, ex.Message);
+                ViewData["ERRRes"] = ex.Message;
+                ViewData["Switch"] = "Error"; VU = "_CommonView";
+            }
+
+            return new PartialViewResult
+            {
+                ViewName = VU,
+                ViewData = this.ViewData
+            };
+        }
+
+
+        public async Task<IActionResult> OnGetFormFindKala()
+        {// فرم پیدا کردن کالا
+            try
+            {
+                ViewData["Switch"] = "FormFindKala";
+            }
+            catch (Exception ex)
+            {
+                ViewData["ERRComm"] = await DBS.LogErrorSaveAsync(ProcName, Params, Center.GetUserId(Request.Cookies["User.Sarmad.ir"]), FormId, MethodBase.GetCurrentMethod().Name, ex.Message);
+                ViewData["ERRRes"] = ex.Message;
+                ViewData["Switch"] = "Error"; VU = "_CommonView";
+            }
+
+            return new PartialViewResult
+            {
+                ViewName = VU,
+                ViewData = this.ViewData
+            };
+        }
+
+        public async Task<IActionResult> OnGetFindKala(string Filter)
+        {// لیست اشخاص فیلتر شده
+            try
+            {
+                Params = new Dictionary<string, object>
+                {
+                    { "@Category", 0 },
+                    { "@Prod", Filter },
+                };
+                ProcName = "dbo.Products_ListSearch";
+
+                ListProducts = await DBS.GetReportAsync(ProcName, Params);
+                if (ListProducts.Rows.Count == 0)
+                {
+                    ViewData["Switch"] = "MSG";
+                    ViewData["MSG"] = "کالایی با مشخصات فوق پیدا نشد. شرایط جستجو را تغییر بدهید و دوباره گزارش بگیرید";
+
+                    return new PartialViewResult
+                    {
+                        ViewName = "_CommonView",
+                        ViewData = this.ViewData
+                    };
+                }
+                ;
+
+                ViewData["Switch"] = "ListKalaFiltered";
+
+            }
+            catch (Exception ex)
+            {
+                ViewData["ERRComm"] = await DBS.LogErrorSaveAsync(ProcName, Params, Center.GetUserId(Request.Cookies["User.Sarmad.ir"]), FormId, MethodBase.GetCurrentMethod().Name, ex.Message);
+                ViewData["ERRRes"] = ex.Message;
+                ViewData["Switch"] = "Error"; VU = "_CommonView";
+            }
+
+            return new PartialViewResult
+            {
+                ViewName = VU,
+                ViewData = this.ViewData
+            };
+
+        }
+
 
 
 

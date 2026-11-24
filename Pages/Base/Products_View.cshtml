@@ -180,7 +180,7 @@
                             <th><span>#</span></th>
                             <th><span class="w-fix-75"><span class="icofont icofont-2x icofont-atom"></span></span></th>
                             <th><span class="w-fix-75">کد</span></th>
-                            <th><span class="w-fix-150">نام</span></th>
+                            <th><span class="w-fix-350">نام</span></th>
                             <th><span class="w-fix-100">موجودی</span></th>
                             <th><span class="w-fix-100">واحد سنجش</span></th>
                             <th><span class="w-fix-50">بسته بندی</span></th>
@@ -202,7 +202,7 @@
                         <th><span>#</span></th>
                         <th><span class="w-fix-75"><span class="icofont icofont-2x icofont-atom"></span></span></th>
                         <th><span class="w-fix-75">کد</span></th>
-                        <th><span class="w-fix-150">نام</span></th>
+                        <th><span class="w-fix-350">نام</span></th>
                         <th><span class="w-fix-100">موجودی</span></th>
                         <th><span class="w-fix-100">واحد سنجش</span></th>
                         <th><span class="w-fix-50">بسته بندی</span></th>
@@ -224,19 +224,19 @@
                                 <span class="w-fixC-75" onclick="ClickBtnSimpl('FormSabtPicBtn', '@item["Si"]','FormSabtPicOld','@item["Pic"].ToString()');">
                                     @if (@item["Pic"].ToString() != "")
                                     {
-                                        <img src="/Uploads/Products/P_@item["Si"]_@item["Pic"]" alt="دایان دانا - @item["Tp_Product"]" class="w-100 rounded rounded-5" />
+                                        <img src="/Uploads/Products/P_@item["Si"]_@item["Pic"]" alt="سرمد - @item["Tp_Product"]" class="w-100 rounded rounded-5" />
                                     }
                                 </span>
                             </td>
                             <td><span class="w-fixC-75">@item["Cu_Product"]</span></td>
-                            <td><span class="w-fixC-150">@item["Tp_Product"]</span></td>
+                            <td><span class="w-fixC-350">@item["Tp_Product"]</span></td>
                             <td><span class="w-fixC-100">@Html.Raw(@item["Mojudi"].ToCommaAshar())</span></td>
                             <td><span class="w-fixC-100">@item["Vahed"]</span></td>
                             <td>
-                                <button type="button" class="btn_Icon Icon_Mor icofont-00x icofont-cubes" title="بسته بندی ها" onclick="ClickBtnSimpl('FormSabtBoxBtn', '@item["Si"]');"></button>
+                                <button type="button" class="btn_Icon Icon_Mor icofont-00x icofont-cubes" title="بسته بندی ها" onclick="ClickBtnSimpl('FormSabtBoxBtn', '@item["Si"]','FormSabtBoxVahed','@item["Vahed"]');"></button>
                             </td>
                             <td>
-                                <button type="button" class="btn_Icon Icon_Mor icofont-00x icofont-edit" title="ویرایش" onclick="ClickBtnSimpl('FormSabtProductBtn', '@item["Si"]');"></button>
+                                <button type="button" class="btn_Icon Icon_Brown icofont-00x icofont-edit" title="ویرایش" onclick="ClickBtnSimpl('FormSabtProductBtn', '@item["Si"]');"></button>
                             </td>
                             <td><span class="w-fixC-350">@item["Sharh_Product"]</span></td>
                             <td><span class="w-fixC-200">@item["TpCategoryFull"]</span></td>
@@ -278,141 +278,139 @@
 
 
     case "FormSabtProduct":
-        <section class="">
-            <div class="secondAreaSection">
-                <form asp-antiforgery="true" method="post" data-ajax-method="post" data-ajax="true"
-                      data-ajax-confirm="ذخیره اطلاعات کالا انجام گردد؟"
-                      data-ajax-Btn="UpdateProductBtn"
-                      data-ajax-begin="SpinnerShowForm('چند لحظه صبر کنید');"
-                      data-ajax-url="?handler=UpdateProduct"
-                      data-ajax-complete="JsonClose_A">
-                    <input type="hidden" name="ID" value="@ViewData["ID"]" />
-                    @if (@ViewData["ID"].ToString() == "0")
-                    {
-                        <div class="d-flex flex-wrap">
-                            <div class="p-2 w-fix-200">
-                                <span class="control-label">کد</span>
-                                <input type="tel" onkeyup="onlyNumber(this)" name="Cu" class="control-input ltr text-center" maxlength="10" value="@ViewData["NewCu"]">
-                            </div>
-                            <div class="p-2 flex-fill w-min-300">
-                                <span class="control-label">نام</span>
-                                <input type="text" name="Tp" class="control-input text-center" maxlength="50" />
-                            </div>
+        <section class="secondAreaSection">
+            <form asp-antiforgery="true" method="post" data-ajax-method="post" data-ajax="true"
+                    data-ajax-confirm="ذخیره اطلاعات کالا انجام گردد؟"
+                    data-ajax-Btn="UpdateProductBtn"
+                    data-ajax-begin="SpinnerShowForm('چند لحظه صبر کنید');"
+                    data-ajax-url="?handler=UpdateProduct"
+                    data-ajax-complete="JsonClose_A">
+                <input type="hidden" name="ID" value="@ViewData["ID"]" />
+                @if (@ViewData["ID"].ToString() == "0")
+                {
+                    <div class="d-flex flex-wrap">
+                        <div class="p-2 w-fix-200">
+                            <span class="control-label">کد</span>
+                            <input type="tel" onkeyup="onlyNumber(this)" name="Cu" class="control-input ltr text-center" maxlength="10" value="@ViewData["NewCu"]">
                         </div>
+                        <div class="p-2 flex-fill w-min-300">
+                            <span class="control-label">نام</span>
+                            <input type="text" name="Tp" class="control-input text-center" maxlength="100" />
+                        </div>
+                    </div>
                         
                         
-                        <div class="d-flex flex-wrap">
-                            <div class="p-2 w-fix-150">
-                                <span class="control-label">وضعیت</span>
-                                <select name="Act" class="control-input">
-                                    <option value="Y">فعال</option>
-                                    <option value="N">غیر فعال</option>
-                                </select>
-                            </div>
-                            <div class="p-2 w-fix-150">
-                                <span class="control-label">واحد سنجش</span>
-                                <select name="Vahed" class="control-input">
-                                    <option value="0">انتخاب کنید</option>
-                                    @foreach (DataRow item in Model.ListUnits.Rows)
-                                    {
-                                        <option value="@item["Si"]">@item["Vahed"]</option>
-                                    }
-                                </select>
-                            </div>
-                            <div class="p-2 w-min-300 flex-fill">
-                                <span class="control-label">طبقه</span>
-                                <select name="Category" class="control-input">
-                                    <option value="0">طبقه کالا را انتخاب کنید</option>
-                                    @foreach (DataRow item in Model.ListCategoris.Rows)
-                                    {
-                                        <option value="@item["Si"]">@item["Cu_Category"] --> @item["TpCategoryFull"]</option>
-                                    }
-                                </select>
-                            </div>
+                    <div class="d-flex flex-wrap">
+                        <div class="p-2 w-fix-150">
+                            <span class="control-label">وضعیت</span>
+                            <select name="Act" class="control-input">
+                                <option value="Y">فعال</option>
+                                <option value="N">غیر فعال</option>
+                            </select>
                         </div>
-
-                        <hr />
-                        <div class="text-end px-3">
-                            <button type="submit" id="UpdateProductBtn" data-bs-toggle="tooltip" data-bs-title="ثبت شود" class="BTN btn_Normal btn_Brown w-fix-250"><span>کالای جدید ثبت شود </span><i class="icofont-2x icofont-checked"></i></button>
+                        <div class="p-2 w-fix-150">
+                            <span class="control-label">واحد سنجش</span>
+                            <select name="Vahed" class="control-input">
+                                <option value="0">انتخاب کنید</option>
+                                @foreach (DataRow item in Model.ListUnits.Rows)
+                                {
+                                    <option value="@item["Si"]">@item["Vahed"]</option>
+                                }
+                            </select>
                         </div>
-                        <hr />
-
-                        <div class="m-2">
-                            <span class="control-label">شرح مختصر</span>
-                            <textarea type="text" name="Sharh" class="control-input-Area text-center" rows="3" maxlength="1000"></textarea>
+                        <div class="p-2 w-min-300 flex-fill">
+                            <span class="control-label">طبقه</span>
+                            <select name="Category" class="control-input">
+                                <option value="0">طبقه کالا را انتخاب کنید</option>
+                                @foreach (DataRow item in Model.ListCategoris.Rows)
+                                {
+                                    <option value="@item["Si"]">@item["Cu_Category"] --> @item["TpCategoryFull"]</option>
+                                }
+                            </select>
                         </div>
+                    </div>
 
-                        <div class="m-2">
-                            <span class="control-label">شرح کامل</span>
-                            <textarea type="text" id="Info_Product" name="Info" class="control-input-Area h-fix-200"></textarea>
+                    <hr />
+                    <div class="text-end px-3">
+                        <button type="submit" id="UpdateProductBtn" data-bs-toggle="tooltip" data-bs-title="ثبت شود" class="BTN btn_Normal btn_Brown w-fix-250"><span>کالای جدید ثبت شود </span><i class="icofont-2x icofont-checked"></i></button>
+                    </div>
+                    <hr />
+
+                    <div class="m-2">
+                        <span class="control-label">شرح مختصر</span>
+                        <textarea type="text" name="Sharh" class="control-input-Area text-center" rows="3" maxlength="1000"></textarea>
+                    </div>
+
+                    <div class="m-2">
+                        <span class="control-label">شرح کامل</span>
+                        <textarea type="text" id="Info_Product" name="Info" class="control-input-Area h-fix-200"></textarea>
+                    </div>
+
+                }
+                else
+                {
+                    <div class="d-flex flex-wrap">
+                        <div class="p-2 w-fix-200">
+                            <span class="control-label">کد</span>
+                            <input type="tel" onkeyup="onlyNumber(this)" name="Cu" class="control-input ltr text-center" maxlength="10" value="@Model.RowData["Cu_Product"]">
                         </div>
-
-                    }
-                    else
-                    {
-                        <div class="d-flex flex-wrap">
-                            <div class="p-2 w-fix-200">
-                                <span class="control-label">کد</span>
-                                <input type="tel" onkeyup="onlyNumber(this)" name="Cu" class="control-input ltr text-center" maxlength="10" value="@Model.RowData["Cu_Product"]">
-                            </div>
-                            <div class="p-2 flex-fill w-min-300">
-                                <span class="control-label">نام</span>
-                                <input type="text" name="Tp" class="control-input text-center" maxlength="50" value="@Model.RowData["Tp_Product"]" />
-                            </div>
+                        <div class="p-2 flex-fill w-min-300">
+                            <span class="control-label">نام</span>
+                            <input type="text" name="Tp" class="control-input text-center" maxlength="100" value="@Model.RowData["Tp_Product"]" />
                         </div>
-                        <div class="d-flex flex-wrap">
-                            <div class="p-2 w-fix-150">
-                                <span class="control-label">وضعیت</span>
-                                <select id="SabtProduct_Act" name="Act" class="control-input">
-                                    <option value="Y">فعال</option>
-                                    <option value="N">غیر فعال</option>
-                                </select>
-                            </div>
-                            <div class="p-2 w-fix-150">
-                                <span class="control-label">واحد سنجش</span>
-                                <select id="SabtProduct_Unit" name="Vahed" class="control-input">
-                                    <option value="0">انتخاب کنید</option>
-                                    @foreach (DataRow item in Model.ListUnits.Rows)
-                                    {
-                                        <option value="@item["Si"]">@item["Vahed"]</option>
-                                    }
-                                </select>
-                            </div>
-                            <div class="p-2 w-min-300 flex-fill">
-                                <span class="control-label">طبقه</span>
-                                <select id="SabtProduct_Category" name="Category" class="control-input">
-                                    <option value="0">طبقه کالا را انتخاب کنید</option>
-                                    @foreach (DataRow item in Model.ListCategoris.Rows)
-                                    {
-                                        <option value="@item["Si"]">@item["Cu_Category"] --> @item["TpCategoryFull"]</option>
-                                    }
-                                </select>
-                            </div>
+                    </div>
+                    <div class="d-flex flex-wrap">
+                        <div class="p-2 w-fix-150">
+                            <span class="control-label">وضعیت</span>
+                            <select id="SabtProduct_Act" name="Act" class="control-input">
+                                <option value="Y">فعال</option>
+                                <option value="N">غیر فعال</option>
+                            </select>
                         </div>
-
-                        <hr />
-                        <div class="text-end px-3">
-                            <button type="submit" id="UpdateProductBtn" data-bs-toggle="tooltip" data-bs-title="ثبت شود" class="BTN btn_Normal btn_Brown w-fix-250"><span>مشخصات کالا اصلاح شود </span><i class="icofont-2x icofont-checked"></i></button>
+                        <div class="p-2 w-fix-150">
+                            <span class="control-label">واحد سنجش</span>
+                            <select id="SabtProduct_Unit" name="Vahed" class="control-input">
+                                <option value="0">انتخاب کنید</option>
+                                @foreach (DataRow item in Model.ListUnits.Rows)
+                                {
+                                    <option value="@item["Si"]">@item["Vahed"]</option>
+                                }
+                            </select>
                         </div>
-                        <hr />
-
-                        <div class="m-2">
-                            <span class="control-label">شرح مختصر</span>
-                            <textarea type="text" name="Sharh" class="control-input-Area text-center" rows="3" maxlength="1000">@Model.RowData["Sharh_Product"]</textarea>
+                        <div class="p-2 w-min-300 flex-fill">
+                            <span class="control-label">طبقه</span>
+                            <select id="SabtProduct_Category" name="Category" class="control-input">
+                                <option value="0">طبقه کالا را انتخاب کنید</option>
+                                @foreach (DataRow item in Model.ListCategoris.Rows)
+                                {
+                                    <option value="@item["Si"]">@item["Cu_Category"] --> @item["TpCategoryFull"]</option>
+                                }
+                            </select>
                         </div>
+                    </div>
 
-                        <div class="m-2">
-                            <span class="control-label">شرح کامل</span>
-                            <textarea type="text" id="Info_Product" name="Info" class="control-input-Area h-fix-200">@Model.RowData["Info_Product"]</textarea>
-                        </div>
+                    <hr />
+                    <div class="text-end px-3">
+                        <button type="submit" id="UpdateProductBtn" data-bs-toggle="tooltip" data-bs-title="ثبت شود" class="BTN btn_Normal btn_Brown w-fix-250"><span>مشخصات کالا اصلاح شود </span><i class="icofont-2x icofont-checked"></i></button>
+                    </div>
+                    <hr />
+
+                    <div class="m-2">
+                        <span class="control-label">شرح مختصر</span>
+                        <textarea type="text" name="Sharh" class="control-input-Area text-center" rows="3" maxlength="1000">@Model.RowData["Sharh_Product"]</textarea>
+                    </div>
+
+                    <div class="m-2">
+                        <span class="control-label">شرح کامل</span>
+                        <textarea type="text" id="Info_Product" name="Info" class="control-input-Area h-fix-200">@Model.RowData["Info_Product"]</textarea>
+                    </div>
 
 
-                        <script>
-                            SetValueSimpl('SabtProduct_Category','@Model.RowData["Si_Category"]','SabtProduct_Unit','@Model.RowData["Si_Unit"]','SabtProduct_Act','@Model.RowData["IsActive"]');
-                        </script>
-                    }
-                </form>
-            </div>
+                    <script>
+                        SetValueSimpl('SabtProduct_Category','@Model.RowData["Si_Category"]','SabtProduct_Unit','@Model.RowData["Si_Unit"]','SabtProduct_Act','@Model.RowData["IsActive"]');
+                    </script>
+                }
+            </form>
             <script>
                 SetTiny('Info_Product');
             </script>
@@ -442,7 +440,7 @@
                            accept=".jpg,.png,.bmp,.jpeg"
                            onchange="GetPhoto(this,'PicName', 'PhotoPic'); ClickBtn('UpLoadPicBtn');" />
 
-                    <img id="PhotoPic" src="/Uploads/Products/@ViewData["PicOld"]" alt="دایان دانا - تصویر کالا" onclick="ClickBtn('PicUpload');" class="w-max-350 cursor-pointer rounded rounded-5" />
+                    <img id="PhotoPic" src="/Uploads/Products/@ViewData["PicOld"]" alt="سرمد - تصویر کالا" onclick="ClickBtn('PicUpload');" class="w-max-350 cursor-pointer rounded rounded-5" />
                     <hr />
                     <span id="PicName">برای تغییر تصویر روی عکس کلیک کنید</span>
 
@@ -461,7 +459,7 @@
                       data-ajax-Btn="SabtBoxBtn"
                       data-ajax-begin="SpinnerShow('@ViewData["Switch"]_MS','چند لحظه صبر کنید');"
                       data-ajax-url="?handler=SabtBox"
-                      data-ajax-Update="#FormSabtBox_MS">
+                      data-ajax-Update="#@ViewData["Switch"]_MS">
                     <input type="hidden" name="ProdID" value="@ViewData["ID"]" />
                     <div class="row">
                         <div class="col-sm-6">
@@ -473,8 +471,12 @@
                         <div class="col-sm-3">
                             <div>
                                 <span class="control-label">ضریب</span>
-                                <input type="tel" name="Zarib" class="control-input text-center ltr" maxlength="10" />
+                                <div class="d-flex gap-2">
+                                    <input type="tel" name="Zarib" class="control-input text-center ltr" maxlength="10" />
+                                    <span>@ViewData["Vahed"]</span>
+                                </div>
                             </div>
+                            
                         </div>
                         <div class="col-sm-3 d-flex justify-content-end align-items-end">
                             <button type="submit" id="SabtBoxBtn" data-bs-toggle="tooltip" data-bs-title="ثبت شود" class="BTN btn_Normal btn_Brown w-min-250"><span>بسته بندی کالا ثبت شود</span><i class="icofont-2x icofont-checked"></i></button>
@@ -639,6 +641,559 @@
                             {
                                 <button type="button" class="btn_Icon Icon_Red icofont-00x icofont-bin" title="حذف" onclick="ClickBtnSimpl('DeleteCategoryBtn', '@item["Si"]');"></button>
                             }
+                        </td>
+                        <td><span class="w-fixC-180 text-start"><span>@item["EditorName"]</span><span class="text_line23 ltr">@item["TimeEdit"]</span></span></td>
+                    </tr>
+                }
+
+            </tbody>
+        </table>
+        break;
+
+
+    case "FormSabtBOM":
+        <section class="secondAreaSection">
+            <form asp-antiforgery="true" method="post" data-ajax-method="post" data-ajax="true"
+                  data-ajax-confirm="ذخیره الگوی تولید انجام گردد؟"
+                  data-ajax-Btn="UpdateBomBtn"
+                  data-ajax-begin="SpinnerShowForm('چند لحظه صبر کنید');"
+                  data-ajax-url="?handler=UpdateBom"
+                  data-ajax-complete="JsonClose_A">
+                <input type="hidden" name="ID" value="@ViewData["OlguID"]" />
+                @if (@ViewData["OlguID"].ToString() == "0")
+                {
+                    <div class="p-2">
+                        <span class="control-label">عنوان الگو</span>
+                        <input type="text" name="OnvanOlgu" class="control-input text-center" maxlength="100" />
+                    </div>
+
+                    <div class="row">
+                        <div class="col-6 col-sm-8 text-start">
+                            <button type="button" class="m-1 BTN btn_Blue2 btn_Pill w-fix-200" onclick="ClickBtn('FormFindMahsulBtn');"><span>جستجوی کالا</span><i class="icofont-2x icofont-search"></i></button>
+                            <input type="hidden" name="ProdId" id="OlduProdId" value="0" />
+                            <input class="control-input text-center" readonly id="OlduProdName" />
+                        </div>
+                        <div class="col-6 col-sm-2 pt-4">
+                            <span class="control-label">وضعیت</span>
+                            <select name="Act" class="control-input">
+                                <option value="Y">فعال</option>
+                                <option value="N">غیر فعال</option>
+                            </select>
+                        </div>
+                        <div class="col-6 col-sm-2 pt-4">
+                            <span class="control-label">الگوی اصلی</span>
+                            <select name="MainOlgu" class="control-input">
+                                <option value="Y">بلی</option>
+                                <option value="N">خیر</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <hr />
+                    <div class="text-end px-3">
+                        <button type="submit" id="UpdateBomBtn" data-bs-toggle="tooltip" data-bs-title="ثبت شود" class="BTN btn_Normal btn_Brown w-fix-250"><span>الگوی جدید ثبت شود </span><i class="icofont-2x icofont-checked"></i></button>
+                    </div>
+
+
+                }
+                else
+                {
+                    <div class="p-2">
+                        <span class="control-label">عنوان الگو</span>
+                        <input type="text" name="OnvanOlgu" class="control-input text-center" maxlength="100" value="@Model.RowData["OnvanOlgu"]"/>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-6 col-sm-8 text-start">
+                            <button type="button" class="m-1 BTN btn_Blue2 btn_Pill w-fix-200" onclick="ClickBtn('FormFindMahsulBtn');"><span>جستجوی کالا</span><i class="icofont-2x icofont-search"></i></button>
+                            <input type="hidden" name="ProdId" id="OlduProdId" value="@Model.RowData["Si_Product"]" />
+                            <input class="control-input text-center" readonly id="OlduProdName" value="@Model.RowData["Cu_Product"] - @Model.RowData["Tp_Product"]" />
+                        </div>
+                        <div class="col-6 col-sm-2 pt-4">
+                            <span class="control-label">وضعیت</span>
+                            <select id="SabtBom_Act" name="Act" class="control-input">
+                                <option value="Y">فعال</option>
+                                <option value="N">غیر فعال</option>
+                            </select>
+                        </div>
+                        <div class="col-6 col-sm-2 pt-4">
+                            <span class="control-label">الگوی اصلی</span>
+                            <select id="SabtBom_Main" name="MainOlgu" class="control-input">
+                                <option value="Y">بلی</option>
+                                <option value="N">خیر</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <hr />
+                    <div class="text-end px-3">
+                        <button type="submit" id="UpdateBomBtn" data-bs-toggle="tooltip" data-bs-title="ثبت شود" class="BTN btn_Normal btn_Brown w-fix-250"><span>ویرایش الگوی ثبت شود </span><i class="icofont-2x icofont-checked"></i></button>
+                    </div>
+                    <script>
+                        SetValueSimpl('SabtBom_Act','@Model.RowData["IsActive"]','SabtBom_Main','@Model.RowData["IsMain"]',);
+                    </script>
+                }
+            </form>
+
+
+            <div hidden>
+                <form method="get" data-ajax="true" data-ajax-method="get"
+                      data-ajax-begin="MsgFormSpinner('B','انتخاب محصول', 'چند لحظه صبر کنید');"
+                      data-ajax-url="?handler=FormFindMahsul"
+                      data-ajax-update="#MsgForm_B_MATN">
+                    <input type="submit" hidden id="FormFindMahsulBtn" />
+                </form>
+            </div>
+
+        </section>
+        break;
+
+
+    case "FormFindMahsul":
+        <div class="secondAreaSection w-min-mediaForm">
+            <form method="get" data-ajax="true" data-ajax-method="get"
+                  data-ajax-begin="SpinnerShow('FindMahsulRes', 'چند لحظه صبر کنید');"
+                  data-ajax-url="?handler=FindMahsul"
+                  data-ajax-update="#FindMahsulRes">
+                <div class="w-max-400 mx-auto">
+                    <div class="w-100">
+                        <span class="control-label">قسمتی از مشخصات محصول</span>
+                        <input class="control-input text-center" name="Filter" value="" />
+                    </div>
+                    <div class="text-end p-3">
+                        <button type="submit" title="جستجوی" class="BTN btn_Pill btn_Blue2 w-min-200"><span>جستجو </span><i class="icofont-2x icofont-search-1"></i></button>
+                    </div>
+
+                </div>
+            </form>
+        </div>
+
+        <div id="FindMahsulRes" class="mt-3">
+        </div>
+
+        break;
+
+    case "ListMahsulFiltered":
+        <div class="secondArea p-2 w-min-330">
+            <div class="d-flex flex-wrap justify-content-between border-top border-secondary">
+                <div class="Area_Count w-fix-200">
+                    <span>تعداد : </span><span>@Model.ListProducts.Rows.Count </span>
+                </div>
+            </div>
+
+
+            <div class="header_Table">
+                <button type="button" class="btn_Icon footer_Right Icon_Red icofont-00x icofont-curved-double-right" title="اسکرول به راست" onclick="ScrollRight('@ViewData["Switch"]_FT');"></button>
+                <button type="button" class="btn_Icon footer_Left Icon_Red icofont-00x icofont-curved-double-left" title="اسکرول به چپ" onclick="ScrollLeft('@ViewData["Switch"]_FT');"></button>
+                <div id="@ViewData["Switch"]_FT" class="overflow-hidden" onscroll="ScrollSlave(this, '@ViewData["Switch"]_MS');">
+                    <table class="table grid-table">
+                        <thead>
+                            <tr>
+                                <th><span>#</span></th>
+                                <th><span class="w-fix-50">کد</span></th>
+                                <th><span class="w-fix-350">نام</span></th>
+                                <th><span class="w-fix-50">انتخاب</span></th>
+                                <th><span class="w-fix-100">واحد</span></th>
+                            </tr>
+                        </thead>
+                    </table>
+                </div>
+            </div>
+            <div class="overflow-auto" id="@ViewData["Switch"]_MS" onscroll="ScrollSlave(this, '@ViewData["Switch"]_FT');">
+                <table class="table grid-table">
+                    <thead class="header_Tablehiden">
+                        <tr>
+                            <th><span>#</span></th>
+                            <th><span class="w-fix-50">کد</span></th>
+                            <th><span class="w-fix-350">نام</span></th>
+                            <th><span class="w-fix-50">انتخاب</span></th>
+                            <th><span class="w-fix-100">واحد</span></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (DataRow item in Model.ListProducts.Rows)
+                        {
+                            { RJ++; }
+                            <tr onclick="RowSelect(this);">
+                                <td class="text-danger">@RJ</td>
+                                <td>@item["Cu_Product"]</td>
+                                <td><span class="w-fixC-350">@item["Tp_Product"]</span></td>
+                                <td>
+                                    <button type="button" class="btn_Icon Icon_Mor icofont-00x icofont-verification-check" title="انتخاب" onclick="SetValueSimpl('OlduProdId', '@item["Si"]', 'OlduProdName','@item["Cu_Product"] @item["Tp_Product"]'); ClickBtn('MsgFrom_B_BtnClose')"></button>
+                                </td>
+                                <td><span class="w-fixC-100">@item["Vahed"]</span></td>
+                            </tr>
+                        }
+
+                    </tbody>
+                </table>
+            </div>
+
+        </div>
+
+        break;
+
+
+    case "ListBOM":
+        <div class="d-flex flex-wrap justify-content-between border-top border-secondary">
+            <div class="Area_Count w-fix-200">
+                <span>تعداد : </span><span>@Model.ListOlgus.Rows.Count </span>
+            </div>
+        </div>
+
+        <div class="header_Table">
+            <button type="button" class="btn_Icon footer_Right Icon_Red icofont-00x icofont-curved-double-right" title="اسکرول به راست" onclick="ScrollRight('@ViewData["Switch"]_FT');"></button>
+            <button type="button" class="btn_Icon footer_Left Icon_Red icofont-00x icofont-curved-double-left" title="اسکرول به چپ" onclick="ScrollLeft('@ViewData["Switch"]_FT');"></button>
+            <div id="@ViewData["Switch"]_FT" class="overflow-hidden" onscroll="ScrollSlave(this, '@ViewData["Switch"]_MS');">
+                <table class="table grid-table">
+                    <thead>
+                        <tr>
+                            <th><span>#</span></th>
+                            <th><span class="w-fix-350">عنوان الگو</span></th>
+                            <th><span class="w-fix-350">محصول</span></th>
+                            <th><span class="w-fix-100">وضعیت</span></th>
+                            <th><span class="w-fix-100">اصلی</span></th>
+                            <th><span class="w-fix-50">لیست کالاها</span></th>
+                            <th><span class="w-fix-50">ویرایش</span></th>
+                            <th><span class="w-fix-50">حذف</span></th>
+                            <th><span class="w-fix-180"><span>ویرایشگر</span> / <span>زمان</span></span></th>
+                        </tr>
+                    </thead>
+                </table>
+            </div>
+        </div>
+        <div class="overflow-auto" id="@ViewData["Switch"]_MS" onscroll="ScrollSlave(this, '@ViewData["Switch"]_FT');">
+            <table class="table grid-table">
+                <thead class="header_Tablehiden">
+                    <tr>
+                        <th><span>#</span></th>
+                        <th><span class="w-fix-350">عنوان الگو</span></th>
+                        <th><span class="w-fix-350">محصول</span></th>
+                        <th><span class="w-fix-100">وضعیت</span></th>
+                        <th><span class="w-fix-100">اصلی</span></th>
+                        <th><span class="w-fix-50">لیست کالاها</span></th>
+                        <th><span class="w-fix-50">ویرایش</span></th>
+                        <th><span class="w-fix-50">حذف</span></th>
+                        <th><span class="w-fix-180"><span>ویرایشگر</span> / <span>زمان</span></span></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (DataRow item in Model.ListOlgus.Rows)
+                    {
+                        { RJ++; }
+                        <tr onclick="RowSelect(this);" id="BOM_@item["Si"]">
+                            <td class="text-danger">@RJ</td>
+                            <td><span class="w-fixC-350">@item["OnvanOlgu"]</span></td>
+                            <td>
+                                <span class="w-fixC-350 text-start">@item["Tp_Product"]<span class="text_line23">@item["Cu_Product"]</span></span>
+                            </td>
+                            <td><span class="w-fixC-100">@item["IsActiveTp"]</span></td>
+                            <td><span class="w-fixC-100">@item["IsMainTp"]</span></td>
+                            <td>
+                                <button type="button" class="btn_Icon Icon_Mor icofont-00x icofont-chart-flow" title="لیست مواد" onclick="ClickBtnSimpl('FormMavadBOMBtn', '@item["Si"]');"></button>
+                            </td>
+                            <td>
+                                <button type="button" class="btn_Icon Icon_Blue2 icofont-00x icofont-edit" title="ویرایش" onclick="ClickBtnSimpl('FormSabtBOMBtn', '@item["Si"]');"></button>
+                            </td>
+                            <td>
+                                <button type="button" class="btn_Icon Icon_Red icofont-00x icofont-bin" title="حذف" onclick="ClickBtnSimpl('DeleteBOMBtn', '@item["Si"]');"></button>
+                            </td>
+                            <td><span class="w-fixC-180 text-start"><span>@item["EditorName"]</span><span class="text_line23 ltr">@item["TimeEdit"]</span></span></td>
+                        </tr>
+                    }
+
+                </tbody>
+            </table>
+        </div>
+
+        <form asp-antiforgery="true" method="post" data-ajax="true" data-ajax-method="post"
+              data-ajax-confirm="آیا این الگوی تولید حذف گردد؟"
+              data-ajax-Btn="DeleteBOMBtn"
+              data-ajax-begin="SpinnerShowForm('چند لحظه صبر کنید');"
+              data-ajax-url="?handler=DeleteBOM"
+              data-ajax-complete="CompleteResult"
+              data-ajax-success="AreaHide('BOM_'+EleValue('DeleteBOMBtn'))">
+            <input type="submit" hidden id="DeleteBOMBtn" name="ID" />
+        </form>
+
+        <form method="get" data-ajax="true" data-ajax-method="get"
+              data-ajax-begin="MsgFormSpinner('A','اجزای تشکیل‌دهنده محصول', 'چند لحظه صبر کنید');"
+              data-ajax-url="?handler=FormMavadBOM"
+              data-ajax-update="#MsgForm_A_MATN">
+            <input type="submit" hidden id="FormMavadBOMBtn" name="OlguID" />
+        </form>
+
+        break;
+
+
+
+
+    case "FormMavadBOM":
+         <section class="secondAreaSection">
+            <div class="">محصول: <span class="font-24">@Model.RowData["Cu_Product"] - @Model.RowData["Tp_Product"] </span></div>
+            <hr class="w-50 mx-auto" />
+            <div class="pb-3">الگو: <span class="font-24">@Model.RowData["OnvanOlgu"]</span></div>
+
+
+            <div class="filterArea mt-1 dis-none" id="AreaAddMavad">
+                <form asp-antiforgery="true" method="post" data-ajax-method="post" data-ajax="true"
+                      data-ajax-confirm="آیا این کالا در تولید محصول استفاده میشود؟"
+                      data-ajax-Btn="SabtMavadBOMBtn"
+                      data-ajax-begin="SpinnerShow('@ViewData["Switch"]_MS','چند لحظه صبر کنید');"
+                      data-ajax-url="?handler=SabtMavadBOM"
+                      data-ajax-Update="#@ViewData["Switch"]_MS"
+                      data-ajax-complete="SetValueSimpl('FindMavadId','0', 'MavadQuantity','0'); SetText('FindMavadName','کالا را انتخاب کنید');">
+                    <input type="hidden" name="OlguID" value="@ViewData["OlguID"]" />
+                    <div class="row">
+                        <div class="col-sm-6 text-start">
+                            <button type="button" class="m-1 BTN btn_Blue2 btn_Pill w-fix-200" onclick="ClickBtn('FormFindKalaBtn');"><span>جستجوی کالا</span><i class="icofont-2x icofont-search"></i></button>
+                            <div id="FindMavadName" class="alert alert-info">با جستجو کالا را نتخاب کنید</div>
+                            <input type="hidden" id="FindMavadId" name="MavadID" value="0" />
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="w-max-300 p-2">
+                                <span class="control-label">مقدار</span>
+                                <div class="d-flex">
+                                    <input type="tel" id="MavadQuantity" name="Quantity" class="control-input text-center ltr" maxlength="10" />
+                                    <span id="VahedMavad" class="w-fix-100">واحد</span>
+                                </div>
+                            </div>
+                            <div class="">
+                                <button type="submit" id="SabtMavadBOMBtn" data-bs-toggle="tooltip" data-bs-title="ثبت شود" class="BTN btn_Normal btn_Brown"><span>کالا به لیست مواد مورد نیاز اضافه شود</span><i class="icofont-2x icofont-checked"></i></button>
+                            </div>
+                        </div>
+                    </div>
+
+                </form>
+            </div>
+
+
+            <div class="d-flex flex-wrap justify-content-between border-top border-secondary">
+                <div class="Area_Count w-fix-200">
+                    <span>تعداد : </span><span>@Model.ListProducts.Rows.Count </span>
+                </div>
+                <div class="Area_Print w-fix-200">
+                    <button type="button" class="BTN Icon_Blue2 Area_Top w-100" onclick="AreaToggel('AreaAddMavad')"><span>اضافه کردن</span><i class="icofont-2x icofont-plus "></i></button>
+                </div>
+            </div>
+            <div class="header_Table">
+                <button type="button" class="btn_Icon footer_Right Icon_Red icofont-00x icofont-curved-double-right" title="اسکرول به راست" onclick="ScrollRight('@ViewData["Switch"]_FT');"></button>
+                <button type="button" class="btn_Icon footer_Left Icon_Red icofont-00x icofont-curved-double-left" title="اسکرول به چپ" onclick="ScrollLeft('@ViewData["Switch"]_FT');"></button>
+                <div id="@ViewData["Switch"]_FT" class="overflow-hidden" onscroll="ScrollSlave(this, '@ViewData["Switch"]_MS');">
+                    <table class="table grid-table">
+                        <thead>
+                            <tr>
+                                <th><span>#</span></th>
+                                <th><span class="w-fix-350">کالا</span></th>
+                                <th><span class="w-fix-100">مقدار</span></th>
+                                <th><span class="w-fix-100">واحد</span></th>
+                                <th><span class="w-fix-50">فعال</span></th>
+                                <th><span class="w-fix-50">حذف</span></th>
+                                <th><span class="w-fix-180"><span>ویرایشگر</span> / <span>زمان</span></span></th>
+                            </tr>
+                        </thead>
+                    </table>
+                </div>
+            </div>
+            <div class="overflow-auto" id="@ViewData["Switch"]_MS" onscroll="ScrollSlave(this, '@ViewData["Switch"]_FT');">
+                <table class="table grid-table">
+                    <thead class="header_Tablehiden">
+                        <tr>
+                            <th><span>#</span></th>
+                            <th><span class="w-fix-350">کالا</span></th>
+                            <th><span class="w-fix-100">مقدار</span></th>
+                            <th><span class="w-fix-100">واحد</span></th>
+                            <th><span class="w-fix-50">فعال</span></th>
+                            <th><span class="w-fix-50">حذف</span></th>
+                            <th><span class="w-fix-180"><span>ویرایشگر</span> / <span>زمان</span></span></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (DataRow item in Model.ListProducts.Rows)
+                        {
+                            { RJ++; }
+                            <tr onclick="RowSelect(this);" id="MavadBOM_@item["Si"]">
+                                <td class="text-danger">@RJ</td>
+                                <td>
+                                    <span class="w-fixC-350 text-start">@item["Tp_Product"]<span class="text_line23">@item["Cu_Product"]</span></span>
+                                </td>
+                                <td><span class="w-fixC-100">@item["Quantity"].ToComma()</span></td>
+                                <td><span class="w-fixC-100">@item["Vahed"]</span></td>
+                                <td>
+                                    @if (@item["IsActive"].ToString() == "Y")
+                                    {
+                                        <img class="w-fix-75 cursor-pointer" src="/images/Btn_Yes.jpg" onclick="ToggelYesNo(this,'BoxAct_@item["Si"]');" alt="Sarmad_YesNo" />
+                                        <input id="BoxAct_@item["Si"]" hidden value="Y" />
+                                    }
+                                    else
+                                    {
+                                        <img class="w-fix-75 cursor-pointer" src="/images/Btn_No.jpg" onclick="ToggelYesNo(this,'BoxAct_@item["Si"]');" alt="Sarmad_YesNo" />
+                                        <input id="BoxAct_@item["Si"]" hidden value="N" />
+                                    }
+                                </td>
+                                <td>
+                                    <button type="button" class="btn_Icon Icon_Red icofont-00x icofont-bin" title="حذف" onclick="ClickBtnSimpl('DeleteMavadBOMBtn', '@item["Si"]');"></button>
+                                </td>
+                                <td><span class="w-fixC-180 text-start"><span>@item["EditorName"]</span><span class="text_line23 ltr">@item["TimeEdit"]</span></span></td>
+                            </tr>
+                        }
+
+                    </tbody>
+                </table>
+            </div>
+
+            <div hidden>
+                <form asp-antiforgery="true" method="post" data-ajax="true" data-ajax-method="post"
+                      data-ajax-confirm="آیا این کالا از لیست مواد تشکیل دهنده حذف گردد؟"
+                      data-ajax-Btn="DeleteMavadBOMBtn"
+                      data-ajax-begin="SpinnerShowForm('چند لحظه صبر کنید');"
+                      data-ajax-url="?handler=DeleteMavadBOM"
+                      data-ajax-complete="CompleteResult"
+                      data-ajax-success="AreaHide('MavadBOM_'+EleValue('DeleteMavadBOMBtn'))">
+                    <input type="submit" hidden id="DeleteMavadBOMBtn" name="ID" />
+                </form>
+
+                <div hidden>
+                    <form method="get" data-ajax="true" data-ajax-method="get"
+                          data-ajax-begin="MsgFormSpinner('B','انتخاب کالا', 'چند لحظه صبر کنید');"
+                          data-ajax-url="?handler=FormFindKala"
+                          data-ajax-update="#MsgForm_B_MATN">
+                        <input type="submit" hidden id="FormFindKalaBtn" />
+                    </form>
+                </div>
+
+            </div>
+
+        </section>
+         break;
+
+
+
+    case "FormFindKala":
+        <div class="secondAreaSection w-min-mediaForm">
+            <form method="get" data-ajax="true" data-ajax-method="get"
+                  data-ajax-begin="SpinnerShow('FindKalaRes', 'چند لحظه صبر کنید');"
+                  data-ajax-url="?handler=FindKala"
+                  data-ajax-update="#FindKalaRes">
+                <div class="w-max-400 mx-auto">
+                    <div class="w-100">
+                        <span class="control-label">قسمتی از مشخصات کالا</span>
+                        <input class="control-input text-center" name="Filter" value="" />
+                    </div>
+                    <div class="text-end p-3">
+                        <button type="submit" title="جستجوی" class="BTN btn_Pill btn_Blue2 w-min-200"><span>جستجو </span><i class="icofont-2x icofont-search-user"></i></button>
+                    </div>
+
+                </div>
+            </form>
+        </div>
+
+        <div id="FindKalaRes" class="mt-3">
+        </div>
+
+        break;
+
+    case "ListKalaFiltered":
+        <div class="secondArea p-2 w-min-330">
+            <div class="d-flex flex-wrap justify-content-between border-top border-secondary">
+                <div class="Area_Count w-fix-200">
+                    <span>تعداد : </span><span>@Model.ListProducts.Rows.Count </span>
+                </div>
+            </div>
+
+
+            <div class="header_Table">
+                <button type="button" class="btn_Icon footer_Right Icon_Red icofont-00x icofont-curved-double-right" title="اسکرول به راست" onclick="ScrollRight('@ViewData["Switch"]_FT');"></button>
+                <button type="button" class="btn_Icon footer_Left Icon_Red icofont-00x icofont-curved-double-left" title="اسکرول به چپ" onclick="ScrollLeft('@ViewData["Switch"]_FT');"></button>
+                <div id="@ViewData["Switch"]_FT" class="overflow-hidden" onscroll="ScrollSlave(this, '@ViewData["Switch"]_MS');">
+                    <table class="table grid-table">
+                        <thead>
+                            <tr>
+                                <th><span>#</span></th>
+                                <th><span class="w-fix-50">کد</span></th>
+                                <th><span class="w-fix-200">نام</span></th>
+                                <th><span class="w-fix-50">انتخاب</span></th>
+                                <th><span class="w-fix-100">واحد</span></th>
+                            </tr>
+                        </thead>
+                    </table>
+                </div>
+            </div>
+            <div class="overflow-auto" id="@ViewData["Switch"]_MS" onscroll="ScrollSlave(this, '@ViewData["Switch"]_FT');">
+                <table class="table grid-table">
+                    <thead class="header_Tablehiden">
+                        <tr>
+                            <th><span>#</span></th>
+                            <th><span class="w-fix-50">کد</span></th>
+                            <th><span class="w-fix-200">نام</span></th>
+                            <th><span class="w-fix-50">انتخاب</span></th>
+                            <th><span class="w-fix-100">واحد</span></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (DataRow item in Model.ListProducts.Rows)
+                        {
+                            { RJ++; }
+                            <tr onclick="RowSelect(this);">
+                                <td class="text-danger">@RJ</td>
+                                <td>@item["Cu_Product"]</td>
+                                <td><span class="w-fixC-200">@item["Tp_Product"]</span></td>
+                                <td>
+                                    <button type="button" class="btn_Icon Icon_Mor icofont-00x icofont-verification-check" title="انتخاب" onclick="SetValueSimpl('FindMavadId', '@item["Si"]'); SetText('FindMavadName','@item["Cu_Product"] @item["Tp_Product"]','VahedMavad','@item["Vahed"]'); ClickBtn('MsgFrom_B_BtnClose')"></button>
+                                </td>
+                                <td><span class="w-fixC-100">@item["Vahed"]</span></td>
+                            </tr>
+                        }
+
+                    </tbody>
+                </table>
+            </div>
+
+        </div>
+
+        break;
+
+
+
+
+    case "ListMavadBOM":
+        <table class="table grid-table">
+            <thead class="header_Tablehiden">
+                <tr>
+                    <th><span>#</span></th>
+                    <th><span class="w-fix-250">کالا</span></th>
+                    <th><span class="w-fix-100">مقدار</span></th>
+                    <th><span class="w-fix-100">واحد</span></th>
+                    <th><span class="w-fix-50">فعال</span></th>
+                    <th><span class="w-fix-50">حذف</span></th>
+                    <th><span class="w-fix-180"><span>ویرایشگر</span> / <span>زمان</span></span></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (DataRow item in Model.ListProducts.Rows)
+                {
+                    { RJ++; }
+                    <tr onclick="RowSelect(this);" id="BOM_@item["Si"]">
+                        <td class="text-danger">@RJ</td>
+                        <td>
+                            <span class="w-fixC-250 text-start">@item["Tp_Product"]<span class="text_line23">@item["Cu_Product"]</span></span>
+                        </td>
+                        <td><span class="w-fixC-100">@item["Quantity"].ToComma()</span></td>
+                        <td><span class="w-fixC-100">@item["Vahed"]</span></td>
+                        <td>
+                            @if (@item["IsActive"].ToString() == "Y")
+                            {
+                                <img class="w-fix-75 cursor-pointer" src="/images/Btn_Yes.jpg" onclick="ToggelYesNo(this,'BoxAct_@item["Si"]');" alt="Sarmad_YesNo" />
+                                <input id="BoxAct_@item["Si"]" hidden value="Y" />
+                            }
+                            else
+                            {
+                                <img class="w-fix-75 cursor-pointer" src="/images/Btn_No.jpg" onclick="ToggelYesNo(this,'BoxAct_@item["Si"]');" alt="Sarmad_YesNo" />
+                                <input id="BoxAct_@item["Si"]" hidden value="N" />
+                            }
+                        </td>
+                        <td>
+                            <button type="button" class="btn_Icon Icon_Red icofont-00x icofont-bin" title="حذف" onclick="ClickBtnSimpl('DeleteBOMBtn', '@item["Si"]');"></button>
                         </td>
                         <td><span class="w-fixC-180 text-start"><span>@item["EditorName"]</span><span class="text_line23 ltr">@item["TimeEdit"]</span></span></td>
                     </tr>

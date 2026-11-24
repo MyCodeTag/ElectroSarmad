@@ -9,8 +9,9 @@
 <html lang="fa">
 <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width,  height=device-height, initial-scale=1.0"/>
-    <title>Sarmad - @ViewData["Titel"]</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+
+    <title>سرمد - @ViewData["Titel"]</title>
     <script type="importmap"></script>
     <environment include="Development">
         <link href="~/lib/bootstrap/dist/css/bootstrap.rtl.css" rel="stylesheet" />
@@ -24,17 +25,19 @@
     <link href="~/css/styles.css" rel="stylesheet" asp-append-version="true" />
     <link href="~/css/print.min.css" rel="stylesheet" />
     <link href="~/css/persianDatepicker-latoja.css" rel="stylesheet" />
+    <link href="~/css/modern.css" rel="stylesheet" asp-append-version="true" />
+    <link href="~/css/site.css" rel="stylesheet" asp-append-version="true" />
 </head>
 
 <body>
-    <div class="back-ground-picdark RawImg" id="Wraper">
+    <div class="back-ground-picdark RawImg app-shell" id="Wraper">
  	    <div id="loader">در حال بارگذاری...</div>
         @await Component.InvokeAsync("LayoutInfo", new { FormId = @Model.FormId, userInfo = User })
         @{
-           var layoutData = Context.Items["LayoutData"] as LayoutDataModel;
+            var layoutData = Context.Items["LayoutData"] as LayoutDataModel;
         }
-        <div>
-             <div id="MenuArea" class="menu text-start pb-5 text-white">
+        <div id="PageContent" class="page-content">
+            <div id="MenuArea" class="menu app-sidebar text-start pb-5 text-white">
                 <div class="p-1">
                     @if (@layoutData.formSetup.Name == "Home")
                     {
@@ -102,12 +105,12 @@
                     }
 
                     <div class="text-end mb-5 px-2">
-                        <a href="/Login" onclick="MenuItemClick(this);" class="menu-ItemPre"><h6 class="text-danger"><span class="text-warning icofont-1x icofont-logout mx-2"></span>خروج</h6></a>
+                        <a href="../ApiCenter?handler=Logout" onclick="MenuItemClick(this);" class="menu-ItemPre"><h6 class="text-danger"><span class="text-warning icofont-1x icofont-logout mx-2"></span>خروج</h6></a>
                     </div>
                 </div>
             </div>
             
-            <div id="MainArea" class="mainArea pr_180">
+            <div id="MainArea" class="mainArea pr_260">
                 <main class="main">
                     @if (@layoutData.formSetup.Header != "")
                     {
@@ -137,8 +140,8 @@
             </div>
 
         </div>
-        <div class="border-top footer text-muted">
-            <div id="FooterArea" class="footerArea pr_180">
+        <div class="border-top footer app-footer text-muted">
+            <div id="FooterArea" class="footerArea pr_260">
                 @if (@layoutData.formSetup.Footer != "")
                 {
                     <div class="m-1 alert alert-secondary">@Html.Raw(HttpUtility.HtmlDecode(@layoutData.formSetup.Footer))</div>
@@ -185,7 +188,7 @@
             <!-- پنجره فرم پیامها یک -->
             <div id="ModalForm_A">
                 <span id="MsgFrom_A_Btn" onclick="AreaShowFlex('ModalForm_A');" hidden>فرم پیام روی صفحه</span>
-                <div class="alert secondArea rounded-bottom rounded-4">
+                <div class="alert secondArea">
                     <div class="secondAreaTitr">
                         <h4 class="flex-fill text-center" id="MsgForm_A_TITR">لیست پیام های جدید</h4>
                         <button type="button" class="btn_IconPill Icon_Brown icofont-3x icofont-close-circled" id="MsgFrom_A_BtnClose" onclick="MsgFormClose('A');" data-bs-toggle="tooltip" data-bs-title="بستن پنجره"></button>
@@ -245,7 +248,7 @@
             <!-- پنجره فرم پیامها دو -->
             <div id="ModalForm_B">
                 <span id="MsgFrom_B_Btn" onclick="AreaShowFlex('ModalForm_B');" hidden>فرم پیام روی صفحه</span>
-                <div class="alert secondArea rounded-bottom rounded-4">
+                <div class="alert secondArea">
                     <div class="secondAreaTitr">
                         <h6 class="flex-fill text-center" id="MsgForm_B_TITR">Heading</h6>
                         <button type="button" class="btn_IconPill Icon_Brown icofont-3x icofont-close-circled" id="MsgFrom_B_BtnClose" onclick="MsgFormClose('B');" data-bs-toggle="tooltip" data-bs-title="بستن پنجره"></button>
@@ -260,7 +263,7 @@
             <!-- پنجره فرم پیامها سه -->
             <div id="ModalForm_C">
                 <span id="MsgFrom_C_Btn" onclick="AreaShowFlex('ModalForm_C');" hidden>فرم پیام روی صفحه</span>
-                <div class="alert secondArea rounded-bottom rounded-4">
+                <div class="alert secondArea">
                     <div class="secondAreaTitr">
                         <h6 class="flex-fill text-center" id="MsgForm_C_TITR">Heading</h6>
                         <button type="button" class="btn_IconPill Icon_Brown icofont-3x icofont-close-circled" id="MsgFrom_C_BtnClose" onclick="MsgFormClose('C');" data-bs-toggle="tooltip" data-bs-title="بستن پنجره"></button>

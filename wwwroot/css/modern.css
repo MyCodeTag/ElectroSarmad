@@ -1,0 +1,73 @@
+﻿body {
+}
+
+/* ابزارهای صفحه کالاها */
+.products-page-tools {
+    display: block;
+    width: 100%;
+    max-width: 1000px;
+    padding: 0 12px;
+}
+
+    /* دکمه افزودن کالا */
+    .products-page-tools .BTN {
+        min-height: 38px;
+        padding: 6px 14px;
+        border-radius: 22px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, .15);
+        transition: all .2s ease;
+    }
+
+        .products-page-tools .BTN:hover {
+            transform: translateY(-1px);
+        }
+
+    /* پنل فیلترها */
+    .products-page-tools .filterArea {
+        padding: 12px 16px 16px;
+        margin-top: 14px;
+        margin-bottom: 20px;
+        background-color: #596583;
+        border: 1px solid rgba(255, 255, 255, .18);
+        border-radius: 18px;
+        box-shadow: 0 3px 10px rgba(30, 45, 75, .12);
+    }
+    
+    /* ورودی‌ها */
+    .products-page-tools .control-input {
+        min-height: 34px;
+        padding: 4px 9px;
+        font-size: 14px;
+        border: 1px solid #d1d9e6;
+        border-radius: 6px;
+        color: #263653;
+        background-color: #fff;
+        transition: border-color .2s ease, box-shadow .2s ease;
+    }
+
+        .products-page-tools .control-input:hover {
+            border-color: #8ca9d6;
+        }
+
+        .products-page-tools .control-input:focus {
+            border-color: #55b9d5;
+            color: #263653;
+            font-size: 14px;
+            background-color: #fff;
+            box-shadow: 0 0 0 3px rgba(85, 185, 213, .2);
+            outline: none;
+        }
+
+    /* دکمه نمایش گزارش */
+    .products-page-tools .btn_Blue2 {
+        min-height: 36px;
+        border: 1px solid rgba(255, 255, 255, .8);
+        box-shadow: 0 2px 5px rgba(0, 0, 0, .12);
+    }
+
+        .products-page-tools .btn_Blue2:hover {
+            background-color: #1685d0;
+            color: #fff;
+            border-color: #fff;
+            filter: none;
+        }

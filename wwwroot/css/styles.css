@@ -144,43 +144,10 @@ html {
 }
 
 
-.pr_180 {
+.pr_260 {
     padding-right: 0px;
 }
-.menu {
-    background: url('../images/bg.jpg') repeat;
-    height: 100vh;
-    /*min-height: 350px;*/
-    position: fixed;
-    /*top: 0;*/
-    right: 0;
-    z-index: 300;
-    overflow-x: hidden;
-    transition: 0.5s;
-    width: 0px;
-}
-    .menu a {
-        padding: 6px 10px 6px 5px;
-        margin-top: 2px;
-        text-decoration: none;
-        color: #f1f1f1;
-        display: block;
-        font-size: 12px !important;
-    }
-    .menu a:hover {
-        background-color: #3178f7;
-    }
-.menu-Item {
-    background-color: #17a2b8;
-    border-top-left-radius: 20px;
-    border-bottom-left-radius: 20px;
-}
 
-.menu-ItemPre {
-    
-    width: 100%;
-    transition: width 4.0s ease;
-}
 
 footer-page {
     background: url('../images/bg.jpg') repeat;
@@ -395,12 +362,13 @@ body {
     /* Margin bottom by footer height */
     /*background: url('../images/bg.jpg') repeat;*/
     font-family: Shabnam !important;
-/*    font-family: IRANSans !important;*/
+    /*    font-family: IRANSans !important;*/
     margin-bottom: 150px;
     text-align: center;
     background-color: #ebeff2;
     direction: rtl;
 }
+
 .back-ground-picdark {
     /* Margin bottom by footer height */
     background: url('../images/bg.jpg') repeat;
@@ -3016,17 +2984,17 @@ margin-left: auto !important;
 .control-label {
     display: block;
     text-align: right;
-    margin-right: 10px;
-    margin-top: 10px;
-    font-size: 14px;
     color: #cdcfcf;
+    margin: 4px 5px 5px;
+    font-size: 13px;
+    font-weight: 500;
 }
 .control-labelDark {
     display: block;
     text-align: right;
-    margin-right: 10px;
-    margin-top: 10px;
-    font-size: 14px;
+    margin: 4px 5px 5px;
+    font-size: 13px;
+    font-weight: 500;
     color: #696969;
 }
 .checkboxes {

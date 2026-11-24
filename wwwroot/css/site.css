@@ -29,3 +29,317 @@ body {
 .form-floating > .form-control-plaintext:focus::placeholder, .form-floating > .form-control:focus::placeholder {
   text-align: start;
 }
+
+
+/* =========================================
+   SARMAD - Modern Layout
+   Main application shell
+========================================= */
+
+:root {
+    --app-bg: #111827;
+    --app-bg-light: #1f2937;
+    --app-surface: #ffffff;
+    --app-surface-soft: #f8fafc;
+    --app-primary: #2563eb;
+    --app-primary-light: #eff6ff;
+    --app-text: #1e293b;
+    --app-text-muted: #64748b;
+    --app-border: #e2e8f0;
+    --app-radius: 18px;
+    --app-radius-sm: 10px;
+    --app-shadow: 0 8px 28px rgba(0, 0, 0, .12);
+}
+
+/* Main background */
+
+html,
+body {
+    min-height: 100%;
+}
+
+body {
+    background-color: var(--app-bg);
+    color: var(--app-text);
+}
+
+.app-shell {
+    min-height: 100vh;
+    background-color: var(--app-bg);
+    color: #fff;
+}
+
+/* =========================================
+   Sidebar
+========================================= */
+
+.app-sidebar {
+    color: #e5e7eb;
+}
+
+    .app-sidebar > div {
+        padding-top: 12px;
+    }
+
+    .app-sidebar a {
+        display: block;
+        color: #cbd5e1;
+        text-decoration: none;
+        border-radius: var(--app-radius-sm);
+        padding: 10px 12px;
+        margin: 5px 4px;
+        transition: background-color .2s ease, color .2s ease;
+    }
+
+        .app-sidebar a h6 {
+            margin: 0;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .app-sidebar a:hover {
+            background-color: rgba(255, 255, 255, .10);
+            color: #fff;
+        }
+
+        .app-sidebar a.bg-info {
+            background-color: rgba(37, 99, 235, .25) !important;
+            color: #fff;
+            border-right: 3px solid #60a5fa;
+        }
+
+    .app-sidebar button.BTN {
+        min-height: 42px;
+        border: 1px solid rgba(255, 255, 255, .08);
+        border-radius: var(--app-radius-sm);
+        background-color: rgba(255, 255, 255, .07);
+        color: #e5e7eb;
+        text-align: right;
+        padding: 6px 12px !important;
+        transition: background-color .2s ease;
+    }
+
+        .app-sidebar button.BTN:hover {
+            background-color: rgba(255, 255, 255, .14);
+        }
+
+        .app-sidebar button.BTN i {
+            vertical-align: middle;
+            margin-left: 8px;
+        }
+
+/* =========================================
+   Main content
+========================================= */
+
+
+/* Main content area */
+
+#MainArea {
+    background-color: #fff;
+    color: var(--app-text);
+    min-height: calc(100vh - 100px);
+    border-radius: var(--app-radius) var(--app-radius) 0 0;
+    box-shadow: var(--app-shadow);
+    overflow: hidden;
+    position: relative;
+}
+
+    #MainArea .main {
+        min-height: calc(100vh - 100px);
+        padding-bottom: 20px;
+    }
+
+/* Footer */
+
+.app-footer {
+    background-color: #fff;
+    border-color: var(--app-border) !important;
+    color: var(--app-text-muted) !important;
+}
+
+    .app-footer .footerArea {
+        color: var(--app-text-muted);
+        background-color: #fff;
+    }
+
+/* Main header notification */
+
+#MainArea .page-surface > .alert-primary {
+    border: none;
+    border-radius: var(--app-radius-sm);
+    background-color: var(--app-primary-light);
+    color: #1e40af;
+}
+
+/* Reminder cards */
+
+#MainArea .page-surface .alert-danger {
+    border: 1px solid #fecaca;
+    border-radius: var(--app-radius-sm);
+}
+
+/* =========================================
+   Footer
+========================================= */
+
+.app-footer {
+    background-color: var(--app-bg);
+    border-color: rgba(255, 255, 255, .12) !important;
+    color: #9ca3af !important;
+}
+
+    .app-footer .footerArea {
+        color: #9ca3af;
+    }
+
+    .app-footer .container {
+        padding-top: 12px;
+        padding-bottom: 12px;
+        font-size: 13px;
+    }
+
+/* =========================================
+   Responsive adjustments
+========================================= */
+
+@media (max-width: 768px) {
+
+    .app-sidebar a {
+        padding: 9px 10px;
+    }
+}
+
+
+
+
+/* =========================================
+   Sidebar Push Layout
+========================================= */
+
+/*.page-content {
+    position: relative;
+    transition: margin-right .35s ease;
+}*/
+
+/* Open state */
+
+/*.page-content.menu-open {
+    margin-right: 260px;
+}
+
+    .page-content.menu-open .menu {
+        width: 260px;
+    }*/
+
+/* =========================================
+   SARMAD - Sidebar
+========================================= */
+
+.menu {
+    background: linear-gradient(rgba(17, 24, 39, .82), rgba(17, 24, 39, .92)), url('../images/bg.jpg') repeat;
+    height: 100vh;
+    position: fixed;
+    top: 0;
+    right: 0;
+    z-index: 300;
+    overflow-x: hidden;
+    overflow-y: auto;
+    transition: width .3s ease;
+    width: 0;
+    padding-bottom: 30px;
+}
+
+    /* Sidebar links */
+
+    .menu a {
+        display: flex;
+        align-items: center;
+        width: auto;
+        padding: 11px 14px 11px 10px;
+        margin: 4px 5px;
+        border-radius: 9px;
+        text-decoration: none;
+        color: #cbd5e1;
+        font-size: 13px !important;
+        transition: background-color .2s ease, color .2s ease;
+    }
+
+        .menu a h6 {
+            margin: 0;
+            font-size: 13px;
+            font-weight: 500;
+        }
+
+        .menu a:hover {
+            background-color: rgba(255, 255, 255, .09);
+            color: #fff;
+        }
+
+    /* Selected form */
+
+    .menu .menu-Item {
+        background-color: #18a9b5;
+        color: #fff;
+        border-radius: 9px;
+        border-right: 3px solid #7de3e8;
+        box-shadow: 0 3px 10px rgba(0, 0, 0, .15);
+    }
+
+        .menu .menu-Item:hover {
+            background-color: #1597a2;
+            color: #fff;
+        }
+
+    /* Previous / inactive item */
+
+    .menu .menu-ItemPre {
+        background-color: transparent;
+        color: #cbd5e1;
+        border-radius: 9px;
+        transition: background-color .2s ease, color .2s ease;
+    }
+
+        .menu .menu-ItemPre:hover {
+            background-color: rgba(255, 255, 255, .09);
+            color: #fff;
+        }
+
+    /* Category buttons */
+
+    .menu button.BTN {
+        min-height: 44px;
+        border: 1px solid rgba(255, 255, 255, .07);
+        border-radius: 9px;
+        background-color: rgba(255, 255, 255, .06);
+        color: #e2e8f0;
+        text-align: right;
+        padding: 7px 12px !important;
+        transition: background-color .2s ease;
+    }
+
+        .menu button.BTN:hover {
+            background-color: rgba(255, 255, 255, .12);
+        }
+
+        .menu button.BTN i {
+            vertical-align: middle;
+            margin-left: 8px;
+        }
+
+    /* Sidebar scrollbar */
+
+    .menu::-webkit-scrollbar {
+        width: 5px;
+    }
+
+    .menu::-webkit-scrollbar-track {
+        background: transparent;
+    }
+
+    .menu::-webkit-scrollbar-thumb {
+        background: #475569;
+        border-radius: 10px;
+    }
+/* Header - Always above sidebar */
+

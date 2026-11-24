@@ -35,6 +35,12 @@ namespace Sarmad.Pages
         public void OnGet()
         {
         }
+        public IActionResult OnGetLogout()
+        {
+            Response.Cookies.Delete("Sarmad.ir");
+
+            return RedirectToPage("/Index");
+        }
         public async Task<IActionResult> OnGetHelpShow(string ID = "0")
         {
             try

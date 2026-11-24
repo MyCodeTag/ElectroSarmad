@@ -16,79 +16,131 @@ namespace Sarmad.Pages
 
         private string ProcName = ""; private Dictionary<string, object>? Params;
         private string URL = "/LoginFast";
-        public Int32 FormId = 120;
+        public Int32 FormId = 7;
 
-        public async Task<IActionResult> OnPostLogin(string Password = "", string SaveData = "NO")
+        public async Task<IActionResult> OnPostLogin(string Password)
         {
-            try
+            var legacyCookie = Request.Cookies["User.Sarmad.ir"].FromLegacyCookieString();
+            string UserName = legacyCookie["userName"];
+            UserName = (String.IsNullOrEmpty(UserName)) ? "" : UserName.Trim();
+            Password = (String.IsNullOrEmpty(Password)) ? "" : Password.Trim();
+
+            //  یوزر را میفرستم و هش پسورد را میگیرم
+            Params = new Dictionary<string, object>
             {
-                var legacyCookie = Request.Cookies["User.Sarmad.ir"].FromLegacyCookieString();
-                string LoginName = legacyCookie["userName"];
-                LoginName = (String.IsNullOrEmpty(LoginName)) ? "" : LoginName.Trim();
-                Password = (String.IsNullOrEmpty(Password)) ? "" : Password.Trim();
+                { "@UserName", UserName }
+            };
+            ProcName = "dbo.GetForLogin";
+            var user = await DBS.GetReportRowAsync(ProcName, Params);
 
-                string key2 = "ziKm87NIqR3etFkLu4pvMwFe54fGnOg6HhjALaBrS0soP7zpQCcbx632yDdElgMO910JKAGHIPQfghj67";
-                var r2 = new Random();
-                StringBuilder token = new StringBuilder();
-                int idx2 = 0;
-                for (int i = 0; i < 75; i++)
+            if (user == null)
+            {
+                return new JsonResult(new JResult
                 {
-                    idx2 = r2.Next(0, 79);
-                    token.Append(key2.Substring(idx2, 1));
-                }
-                string IIP = HttpContext.Connection.RemoteIpAddress.ToString();
+                    Status = "notOK",
+                    Message = "نام کاربری یا رمز عبور اشتباه است"
+                });
 
+            }
+
+            string clientIp = GetClientIp(HttpContext);
+
+            var passwordHash = user["PasswordHash"].ToString();
+            // هش پسورد را با پسوردی که هم اکنون نوشته صحت سنجی میکنم
+            if (!PasswordService.VerifyPassword(passwordHash, Password))
+            {
                 Params = new Dictionary<string, object>
                 {
-                    { "@loginName", LoginName },
-                    { "@Password", Password },
-                    { "@IIP", IIP },
-                    { "@Token", token.ToString()},
+                    { "@PersonId", user["Si_Person"] },
+                    { "@ClientIp", clientIp },
+                    { "@Sharh", "رمز ورود اشتباه وارد شده است" },
                 };
-                ProcName = "Karbaran_Login";
-                var RES = await DBS.GetReportRowAsync(ProcName, Params);
-                if (RES["Res"].ToString() == "OK")
+                ProcName = "dbo.SaveErrorLogin";
+                await DBS.RunCommandAsync(ProcName, Params);
+
+                return new JsonResult(new JResult
                 {
-                    Response.Cookies.Delete("Sarmad.ir");
-                  //  Response.Cookies.Delete("Login.Sarmad.ir");
-                    Response.Cookies.Delete("User.Sarmad.ir");
-
-                    //userInfo.Si = RES["Si"].ToString();
-                    //userInfo.Name = RES["FullName"].ToString();
-                    //userInfo.Kargah = RES["Id_Kargah"].ToString();
-                    //userInfo.NameKargah = RES["Kargah"].ToString();
-                    //userInfo.Token = token.ToString();
-
-                    CookieOptions option = new CookieOptions()
-                    {
-                        Path = "/",
-                        HttpOnly = false,
-                        IsEssential = true,
-                        Secure = true,
-                        Expires = DateTime.Now.AddDays(365),
-                    };
-                    Response.Cookies.Append("Sarmad.ir", token.ToString(), option);
-
-                    var userCookie = new Dictionary<string, string>()
-                    {
-                        { "userName", LoginName.Trim() },
-                        { "Kargah", RES["Id_Kargah"].ToString() },
-                        { "Si", RES["Si"].ToString() },
-                    };
-
-                    Response.Cookies.Append("User.Sarmad.ir", userCookie.ToLegacyCookieString(), option);
-
-                    return Content("OK");
-                }
-                else
-                    return Content(RES["ResTp"].ToString());
+                    Status = "notOK",
+                    Message = "نام کاربری یا رمز عبور اشتباه است"
+                });
             }
-            catch (Exception ex)
+
+            //پسورد را درست وارد کرده است
+            if (user["IsActive"].ToString() == "0")
             {
-                ViewData["ERRComm"] = await DBS.LogErrorSaveAsync(ProcName, Params, Center.GetUserId(Request.Cookies["User.Sarmad.ir"]), FormId, MethodBase.GetCurrentMethod().Name, ex.Message);
-                return RedirectToPage("/Khata", new { returnUrl = URL });
+                Params = new Dictionary<string, object>
+                {
+                    { "@PersonId", user["Si_Person"] },
+                    { "@ClientIp", clientIp },
+                    { "@Sharh", "وضعیت شما فعال نیست با مدیریت تماس بگیرید" },
+                };
+                ProcName = "dbo.SaveErrorLogin";
+                await DBS.RunCommandAsync(ProcName, Params);
+
+                return new JsonResult(new JResult
+                {
+                    Status = "notOK",
+                    Message = "وضعیت شما فعال نیست با مدیریت تماس بگیرید"
+                });
             }
+
+            Guid token = Guid.NewGuid();
+
+            //   صدازدن تابع ذخیره توکن
+            Params = new Dictionary<string, object>
+                {
+                    { "@PersonId", user["Si_Person"] },
+                    { "@AuthToken",  token },
+                    { "@ClientIp", clientIp },
+                };
+            ProcName = "dbo.SabtLogin";
+            await DBS.RunCommandAsync(ProcName, Params);
+
+            // ✔ رمز درست است → توکن از SQL
+            SetLoginCookies(UserName, token.ToString(), user["Si_Person"].ToString());
+
+            return new JsonResult(new JResult
+            {
+                Status = "OK",
+               // Message = ReturnPage
+            });
         }
+        private void SetLoginCookies(string UserName, string Token, string ueserSi)
+        {
+            var option = new CookieOptions
+            {
+                Path = "/",
+                HttpOnly = true,
+                Secure = true,
+                IsEssential = true,
+                Expires = DateTime.Now.AddDays(365)
+            };
+
+            Response.Cookies.Append("Sarmad.ir", Token, option);
+
+            Response.Cookies.Append(
+                "User.Sarmad.ir",
+                new Dictionary<string, string>
+                {
+                    { "UserName", UserName },
+                    { "Si", ueserSi },
+//                    { "Kind", kind }
+                }.ToLegacyCookieString(),
+                option
+            );
+        }
+
+        private string GetClientIp(HttpContext context)
+        {
+            if (context.Request.Headers.TryGetValue("CF-Connecting-IP", out var cfIp))
+                return cfIp;
+
+            if (context.Request.Headers.TryGetValue("X-Forwarded-For", out var xff))
+                return xff.ToString().Split(',')[0].Trim();
+
+            return context.Connection.RemoteIpAddress?.ToString();
+        }
+
 
     }
 }

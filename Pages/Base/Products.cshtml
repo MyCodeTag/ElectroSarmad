@@ -19,6 +19,7 @@
                 </menu-page><point></point>
                 <menu-page data-bs-toggle="tab" data-bs-target="#tab_A" class="active">کالاها</menu-page><point></point>
                 <menu-page data-bs-toggle="tab" data-bs-target="#tab_B">طبقات کالا</menu-page><point></point>
+                <menu-page data-bs-toggle="tab" data-bs-target="#tab_C">الگوی تولید</menu-page><point></point>
                 <menu-page class="w-min-50" onclick="HelpAjax(@Model.FormId);" data-bs-toggle="tooltip" data-bs-title="راهنما">
                     <span class="menu-firuze icofont-00x icofont-learn"></span>
                 </menu-page>
@@ -62,7 +63,7 @@
                 </div>
             }
 
-            <div class="w-max-1000 mx-auto">
+            <div class="w-max-1000 mx-auto products-page-tools">
                 <form method="get" data-ajax="true" data-ajax-method="get"
                       data-ajax-begin="MsgFormSpinner('A','ثبت اطلاعات کالاها', 'چند لحظه صبر کنید');"
                       data-ajax-url="?handler=FormSabtProduct"
@@ -76,7 +77,8 @@
                       data-ajax-begin="MsgFormSpinner('A','ثبت بسته بندی های کالا', 'چند لحظه صبر کنید');"
                       data-ajax-url="?handler=FormSabtBox"
                       data-ajax-update="#MsgForm_A_MATN">
-                    <input type="submit" hidden id="FormSabtBoxBtn" name="ID" />
+                    <input type="hidden" hidden id="FormSabtBoxVahed" name="Vahed" value="METR"/>
+                    <input type="submit" hidden id="FormSabtBoxBtn" name="ID" value="0"/>
                 </form>
 
                 <div class="filterArea">
@@ -204,5 +206,77 @@
             </div>
         </div>
 
-    </div>
+        <!-- ✅ ساختار تولید -->
+        <div class="tab-pane fade" id="tab_C">
+            @{
+                pagesitem = Model.formData.Pages.Select("RJ = 3").First();
+            }
+            <div class="OnvanSafhe">
+                <h6 class="shadow">@pagesitem["OnvanPage"]</h6>
+            </div>
+
+            @if (!string.IsNullOrEmpty(pagesitem["HeaderPage"].ToString()))
+            {
+                <div class="alert alert-secondary">
+                    @Html.Raw(HttpUtility.HtmlDecode(pagesitem["HeaderPage"].ToString()))
+                </div>
+            }
+
+            <div class="w-max-1000 mx-auto">
+                <form method="get" data-ajax="true" data-ajax-method="get"
+                      data-ajax-begin="MsgFormSpinner('A',' فرم الگوی تولید محصول', 'چند لحظه صبر کنید');"
+                      data-ajax-url="?handler=FormSabtBOM"
+                      data-ajax-update="#MsgForm_A_MATN">
+                    <input type="submit" hidden id="FormSabtBOMBtn" name="OlguID" />
+                    <div class="px-2 text-end">
+                        <button type="button" class="BTN btn_Pill btn_Blue2 w-min-200" onclick="ClickBtnSimpl('FormSabtBOMBtn','0');"><span>افزودن الگوی تولید جدید</span><span class="icofont-00x icofont-plus float-end"></span></button>
+                    </div>
+                </form>
+
+                <div class="filterArea">
+                    <div class=" w-100 py-2 m-auto ">
+                        <form method="get" data-ajax-method="get" data-ajax="true"
+                              data-ajax-begin="SpinnerShow('ListBOM', 'در حال بارگذاری لیست الگوهای ساخت');"
+                              data-ajax-url="?handler=ListBOM"
+                              data-ajax-update="#ListBOM">
+                            <div class="row">
+                                <div class="col-6 col-sm-3">
+                                    <div class="pb-2">
+                                        <span class="control-label">محصول</span>
+                                        <input type="text" class="control-input text-center" name="Prod" value="" />
+                                    </div>
+                                </div>
+                                <div class="col-6 col-sm-3">
+                                    <div class="pb-2">
+                                        <span class="control-label">الگوی تولید</span>
+                                        <input type="text" class="control-input text-center" name="Olgu" value="" />
+                                    </div>
+                                </div>
+                                <div class="col-6 col-sm-3">
+                                    <div class="pb-2">
+                                        <span class="control-label">ترتیب نمایش</span>
+                                        <div class="d-flex">
+                                            <select name="Sort" class="control-input">
+                                                <option value="A" selected>محصول</option>
+                                                <option value="B">الگو</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-sm-3 d-flex justify-content-end align-items-end">
+                                    <button type="submit" data-bs-toggle="tooltip" data-bs-title="گزارش" class="BTN btn_Pill btn_Blue2 w-min-200"><span>نمایش گزارش </span><i class="icofont-2x icofont-search-2"></i></button>
+                                </div>
+
+                            </div>
+
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <div class="mt-3" id="ListBOM">
+                <div class="text-center wrapword text-warning">برای تهیه گزارش از فیلتر مناسب استفاده کنید.</div>
+            </div>
+        </div>
+
+     </div>
 </div>
